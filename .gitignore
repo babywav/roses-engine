@@ -1,0 +1,9 @@
+.env
+PROMPTS_ANTIGRAVITY.txt
+server/.env
+server/server
+node_modules/
+__pycache__/
+web/dist/
+.DS_Store
+*.pyc

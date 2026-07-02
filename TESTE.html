@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #0b1121; height: 100%; }
+    button { cursor: pointer; border: none; background: none; color: inherit; font-family: inherit; }
+    textarea { font-family: inherit; }
+    input { font-family: inherit; }
+    * { -webkit-tap-highlight-color: transparent; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+
+    @keyframes claude-organic-snap {
+      0%,   100% { transform: rotate(0deg)   scale(0.94); }
+      12.5%       { transform: rotate(45deg)  scale(1.06); }
+      25%         { transform: rotate(90deg)  scale(0.94); }
+      37.5%       { transform: rotate(135deg) scale(1.06); }
+      50%         { transform: rotate(180deg) scale(0.94); }
+      62.5%       { transform: rotate(225deg) scale(1.06); }
+      75%         { transform: rotate(270deg) scale(0.94); }
+      87.5%       { transform: rotate(315deg) scale(1.06); }
+    }
+    .animate-star {
+      animation: claude-organic-snap 4.8s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-enter { animation: slideUp 0.4s cubic-bezier(.22,.8,.36,1) both; }
+    .welcome-enter { animation: fadeIn 0.7s ease both; }
+
+    textarea:focus { outline: none; }
+    textarea::placeholder { color: rgba(255,255,255,0.3); }
+    textarea { scrollbar-width: none; }
+    textarea::-webkit-scrollbar { display: none; }
+  </style>
+</helmet>
+
+<!-- Root -->
+<div style="min-height: 100vh; background: #0b1121; color: #fff; display: flex; flex-direction: column; position: relative; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+
+  <!-- Background glow -->
+  <div style="position: absolute; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(circle at 50% 40%, rgba(25,45,90,0.4) 0%, rgba(15,25,55,0.3) 40%, rgba(10,13,26,0) 70%);"></div>
+
+  <!-- MAIN scroll area -->
+  <main data-main-scroll="1" style="flex: 1; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 896px; margin: 0 auto; padding: 32px 16px 160px; overflow-y: auto; position: relative; z-index: 10;">
+
+    <!-- Welcome screen -->
+    <sc-if value="{{ showWelcome }}" hint-placeholder-val="{{ true }}">
+      <div class="welcome-enter" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 55vh;">
+        <h1 style="font-size: clamp(28px, 5vw, 48px); font-weight: 300; color: #fff; text-align: center; letter-spacing: 0.01em; line-height: 1.2; transition: opacity 0.5s;">{{ welcomeTitle }}</h1>
+      </div>
+    </sc-if>
+
+    <!-- Chat history -->
+    <sc-if value="{{ showChat }}" hint-placeholder-val="{{ false }}">
+      <div style="width: 100%; display: flex; flex-direction: column; gap: 20px; padding-top: 16px; padding-bottom: 32px;">
+        <sc-for list="{{ msgs }}" as="msg" hint-placeholder-count="0">
+          <div class="msg-enter" style="display: flex; width: 100%; justify-content: {{ msg.flexDir }};">
+            <div style="max-width: 78%; background: {{ msg.bubbleBg }}; border-radius: {{ msg.radius }}; padding: {{ msg.pad }}; font-size: 15px; line-height: 1.65; color: {{ msg.textColor }};">{{ msg.content }}</div>
+          </div>
+        </sc-for>
+
+        <!-- Thinking animation -->
+        <sc-if value="{{ isThinking }}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; width: 100%; justify-content: flex-start; margin-top: 8px;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 40px 0; width: 100%;">
+              <!-- Glow + rotating star -->
+              <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+                <div style="position: absolute; width: 86px; height: 86px; border-radius: 50%; background: #1a56db; opacity: 0.28; filter: blur(18px);"></div>
+                <div class="animate-star" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                  <svg width="48" height="48" viewBox="0 0 100 100" style="overflow: visible;">
+                    <g transform="translate(50, 50)">
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(0) scale(1, 1)"></path>
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(45) scale(0.88, 0.85)"></path>
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(90) scale(1, 1)"></path>
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(135) scale(0.88, 0.85)"></path>
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(180) scale(1, 1)"></path>
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(225) scale(0.88, 0.85)"></path>
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(270) scale(1, 1)"></path>
+                      <path d="M 0 6 C 2.5 6, 4.2 -10, 2.5 -38 C 1.8 -43, -1.8 -43, -2.5 -38 C -4.2 -10, -2.5 6, 0 6 Z" fill="#1a56db" transform="rotate(315) scale(0.88, 0.85)"></path>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <!-- Cycling phrase -->
+              <div style="height: 24px; display: flex; align-items: center; justify-content: center;">
+                <span style="color: rgba(255,255,255,0.45); font-size: 14px; letter-spacing: 0.04em; transition: opacity 0.5s ease; opacity: {{ thinkingOpacity }};">{{ thinkingPhrase }}</span>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <div data-msgs-end="1"></div>
+      </div>
+    </sc-if>
+
+  </main>
+
+  <!-- ═══ FIXED INPUT BAR ═══ -->
+  <div style="position: fixed; left: 0; right: 0; z-index: 20; bottom: {{ inputBottom }}; display: flex; justify-content: center; padding: 0 16px; transition: bottom 0.65s cubic-bezier(.22,.8,.36,1);">
+    <div style="position: relative; width: 100%; max-width: 768px;">
+
+      <!-- Dropdown menu -->
+      <div style="position: absolute; bottom: calc(100% + 12px); left: 0; background: #1f232b; border-radius: 16px; padding: 8px 0; min-width: 240px; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 25px rgba(0,0,0,0.55); transition: opacity 0.18s, transform 0.18s; transform-origin: bottom left; opacity: {{ menuOpacity }}; transform: {{ menuScale }}; pointer-events: {{ menuPointer }};">
+        <div style="display: flex; align-items: center; padding: 12px 20px; font-size: 14px; color: rgba(255,255,255,0.7); gap: 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">
+          <span style="font-size: 16px;">📎</span> Enviar arquivos
+        </div>
+        <div style="display: flex; align-items: center; padding: 12px 20px; font-size: 14px; color: rgba(255,255,255,0.7); gap: 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">
+          <span style="font-size: 16px;">⋯</span> Mais uploads
+        </div>
+        <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 4px 16px;"></div>
+        <div style="display: flex; align-items: center; padding: 12px 20px; font-size: 14px; color: rgba(255,255,255,0.7); gap: 12px; cursor: pointer;" style-hover="background: rgba(255,255,255,0.04)">
+          <span style="font-size: 16px;">🖼</span> Criar imagem
+        </div>
+        <div style="display: flex; align-items: center; padding: 12px 20px; font-size: 14px; color: rgba(255,255,255,0.28); gap: 12px; cursor: not-allowed;">
+          <span style="font-size: 16px; opacity: 0.4;">🎬</span> Criar vídeo
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <div style="background: rgba(30,35,45,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.1); border-radius: 9999px; display: flex; align-items: flex-end; padding: 10px 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.25s, background 0.25s;" style-focus-within="border-color: rgba(255,255,255,0.2); background: rgba(35,40,50,0.92);">
+
+        <!-- + / X button -->
+        <button onClick="{{ toggleMenu }}" style="width: 40px; height: 40px; border-radius: 50%; background: {{ plusBg }}; display: flex; align-items: center; justify-content: center; font-size: 20px; color: rgba(255,255,255,0.55); flex-shrink: 0; margin-bottom: 2px; transform: {{ plusRotate }}; transition: transform 0.3s, background 0.2s; line-height: 1;" style-hover="color: #fff; background: rgba(255,255,255,0.08)">{{ menuIcon }}</button>
+
+        <!-- Textarea -->
+        <textarea value="{{ inputText }}" onChange="{{ onInputChange }}" onKeyDown="{{ onKeyDown }}" placeholder="Peça ao Ross" rows="1" style="flex: 1; background: transparent; border: none; color: rgba(255,255,255,0.9); font-size: 15px; padding: 10px 8px; resize: none; max-height: 128px; overflow-y: auto; line-height: 1.5; margin: 0 4px;"></textarea>
+
+        <!-- Right controls -->
+        <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 2px; flex-shrink: 0;">
+          <!-- Model selector -->
+          <button style="display: flex; align-items: center; gap: 5px; color: rgba(255,255,255,0.4); font-size: 12px; font-weight: 500; padding: 8px 12px; border-radius: 8px; white-space: nowrap;" style-hover="color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05)">
+            Flash-Lite <span style="opacity: 0.6; font-size: 10px;">▾</span>
+          </button>
+
+          <!-- Send button (when text present) -->
+          <sc-if value="{{ showSend }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ doSend }}" style="width: 36px; height: 36px; border-radius: 50%; background: #1a56db; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: 700; line-height: 1; box-shadow: 0 2px 8px rgba(26,86,219,0.5); transition: background 0.18s;" style-hover="background: #2563eb" style-active="transform: scale(0.92)">↑</button>
+          </sc-if>
+
+          <!-- Mic button (when no text) -->
+          <sc-if value="{{ showMic }}" hint-placeholder-val="{{ true }}">
+            <button style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.45); font-size: 18px;" style-hover="color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.05)">🎤</button>
+          </sc-if>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div style="text-align: center; margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.22); letter-spacing: 0.01em;">A IA pode cometer erros. Considere verificar informações importantes.</div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 800 },
+  &quot;userName&quot;: {
+    &quot;editor&quot;: &quot;text&quot;,
+    &quot;default&quot;: &quot;Vinicius&quot;,
+    &quot;section&quot;: &quot;Personalização&quot;
+  },
+  &quot;aiName&quot;: {
+    &quot;editor&quot;: &quot;text&quot;,
+    &quot;default&quot;: &quot;Ross&quot;,
+    &quot;section&quot;: &quot;Personalização&quot;
+  },
+  &quot;thinkingSeconds&quot;: {
+    &quot;editor&quot;: &quot;range&quot;,
+    &quot;default&quot;: 4,
+    &quot;min&quot;: 1,
+    &quot;max&quot;: 10,
+    &quot;step&quot;: 1,
+    &quot;unit&quot;: &quot;s&quot;,
+    &quot;section&quot;: &quot;Comportamento&quot;
+  }
+}">
+class Component extends DCLogic {
+  state = {
+    inputText: '',
+    isMenuOpen: false,
+    chatHistory: [],
+    isThinking: false,
+    phraseIndex: 0,
+    thinkingOpacity: 1,
+  };
+
+  _phraseInterval = null;
+  _nextId = 0;
+
+  _phrases = [
+    'Pensando...',
+    'Analisando o contexto...',
+    'Lendo nas entrelinhas...',
+    'Formulando a melhor resposta...',
+    'Quase lá...',
+  ];
+
+  _send(textOverride) {
+    const text = (textOverride !== undefined ? textOverride : this.state.inputText).trim();
+    if (!text || this.state.isThinking) return;
+
+    const newHistory = [
+      ...this.state.chatHistory,
+      { id: this._nextId++, role: 'user', content: text },
+    ];
+    this.setState({
+      chatHistory: newHistory,
+      inputText: '',
+      isThinking: true,
+      isMenuOpen: false,
+    });
+
+    setTimeout(() => {
+      this.setState(s => ({
+        isThinking: false,
+        chatHistory: [
+          ...s.chatHistory,
+          {
+            id: this._nextId++,
+            role: 'ai',
+            content: 'Entendido! Analisei sua consulta. Se estiver buscando processos jurídicos, posso pesquisar por número CNJ, OAB ou nome da parte em qualquer tribunal do Brasil. Como posso ajudar?',
+          },
+        ],
+      }));
+    }, 4000);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const s = this.state;
+
+    // Start phrase cycle when thinking begins
+    if (!prevState.isThinking && s.isThinking) {
+      this._phraseInterval = setInterval(() => {
+        this.setState({ thinkingOpacity: 0 });
+        setTimeout(() => {
+          this.setState(st => ({
+            phraseIndex: (st.phraseIndex + 1) % 5,
+            thinkingOpacity: 1,
+          }));
+        }, 600);
+      }, 3000);
+    }
+
+    // Clear when thinking ends
+    if (prevState.isThinking && !s.isThinking) {
+      clearInterval(this._phraseInterval);
+      this._phraseInterval = null;
+    }
+
+    // Scroll to bottom on new messages
+    if (
+      prevState.chatHistory !== s.chatHistory ||
+      prevState.isThinking !== s.isThinking
+    ) {
+      const main = document.querySelector('[data-main-scroll]');
+      if (main) main.scrollTop = main.scrollHeight;
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._phraseInterval);
+  }
+
+  renderVals() {
+    const s = this.state;
+    const hasStarted = s.chatHistory.length > 0 || s.isThinking;
+
+    const msgs = s.chatHistory.map(m => ({
+      ...m,
+      flexDir:   m.role === 'user' ? 'flex-end' : 'flex-start',
+      bubbleBg:  m.role === 'user' ? '#2a2f3a' : 'transparent',
+      radius:    m.role === 'user' ? '18px' : '0',
+      pad:       m.role === 'user' ? '12px 18px' : '4px 0',
+      textColor: m.role === 'user' ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.78)',
+    }));
+
+    return {
+      // Layout
+      showWelcome:  !hasStarted,
+      showChat:     hasStarted,
+      inputBottom:  hasStarted ? '32px' : '38%',
+
+      // Welcome
+      welcomeTitle: s.inputText.length > 0
+        ? 'Alguma sugestão fora da caixa?'
+        : 'Sua vez, Vinicius!',
+
+      // Chat
+      msgs,
+      isThinking:      s.isThinking,
+      thinkingPhrase:  this._phrases[s.phraseIndex],
+      thinkingOpacity: s.thinkingOpacity,
+
+      // Input
+      inputText: s.inputText,
+      onInputChange: e => this.setState({ inputText: e.target.value }),
+      onKeyDown: e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          this._send();
+        }
+      },
+      doSend:   () => this._send(),
+      showSend: s.inputText.trim().length > 0,
+      showMic:  s.inputText.trim().length === 0,
+
+      // Menu
+      toggleMenu:  () => this.setState(st => ({ isMenuOpen: !st.isMenuOpen })),
+      menuIcon:    s.isMenuOpen ? '✕' : '＋',
+      plusRotate:  s.isMenuOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+      plusBg:      s.isMenuOpen ? 'rgba(255,255,255,0.08)' : 'transparent',
+      menuOpacity: s.isMenuOpen ? 1 : 0,
+      menuScale:   s.isMenuOpen ? 'scale(1)' : 'scale(0.95)',
+      menuPointer: s.isMenuOpen ? 'auto' : 'none',
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #06070a;
+  color: #e6e9ef;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fundo atmosférico: glows radiais sutis atrás do app */
+.app-bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%),
+    radial-gradient(40% 40% at 80% 90%, rgba(255, 255, 255, 0.03), transparent 70%),
+    linear-gradient(180deg, #090b10, #06070a);
+  z-index: 0;
+}
+
+/* Scrollbar discreta */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Cartão de vidro padrão */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+}
+
+/* Indicador de digitação */
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #8a93a6;
+  display: inline-block;
+}
+
+/* Animações Claude */
+@keyframes claude-organic-snap {
+  0%,   100% { transform: rotate(0deg)   scale(0.94); }
+  12.5%       { transform: rotate(45deg)  scale(1.06); }
+  25%         { transform: rotate(90deg)  scale(0.94); }
+  37.5%       { transform: rotate(135deg) scale(1.06); }
+  50%         { transform: rotate(180deg) scale(0.94); }
+  62.5%       { transform: rotate(225deg) scale(1.06); }
+  75%         { transform: rotate(270deg) scale(0.94); }
+  87.5%       { transform: rotate(315deg) scale(1.06); }
+}
+.animate-star {
+  animation: claude-organic-snap 4.8s cubic-bezier(0.45, 0.05, 0.25, 1) infinite;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg-enter { animation: slideUp 0.4s cubic-bezier(.22,.8,.36,1) both; }
+.welcome-enter { animation: fadeIn 0.7s ease both; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Para esconder scrollbar no textarea */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

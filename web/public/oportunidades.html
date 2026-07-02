@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Oportunidades - Ross AI</title>
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap">
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap">
+    <style>
+        :root {
+            --bg-base: #060913; --bg-card: rgba(20,26,45,0.6); --bg-input: #0F1423;
+            --text-primary: #FFFFFF; --text-secondary: #94A3B8; --text-tertiary: #64748B;
+            --accent-blue: #3B82F6; --accent-green: #10B981; --accent-orange: #F59E0B; --accent-red: #EF4444;
+            --border-light: rgba(255,255,255,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Satoshi', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { background: var(--bg-base); color: var(--text-primary); min-height: 100vh; }
+        .wrap { max-width: 480px; margin: 0 auto; padding: 24px 20px 60px; }
+        .top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+        .back { width: 40px; height: 40px; border-radius: 12px; background: var(--bg-input); border: 1px solid var(--border-light); color: #fff; display: grid; place-items: center; cursor: pointer; font-size: 18px; }
+        .back:active { transform: scale(0.94); }
+        h1 { font-family: 'Fraunces', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+        .sub { font-size: 13px; color: var(--text-tertiary); margin: 2px 0 22px 52px; }
+        .empty { text-align: center; color: var(--text-tertiary); padding: 60px 20px; font-size: 14px; line-height: 1.6; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 20px; padding: 18px; margin-bottom: 14px; cursor: pointer; transition: transform .2s, border-color .2s; backdrop-filter: blur(16px); }
+        .card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.16); }
+        .card:active { transform: scale(0.99); }
+        .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .badge { font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 8px; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+        .b-urgent { background: rgba(239,68,68,0.12); color: #FCA5A5; border: 1px solid rgba(239,68,68,0.25); }
+        .b-warn { background: rgba(245,158,11,0.12); color: #FCD34D; border: 1px solid rgba(245,158,11,0.25); }
+        .b-info { background: rgba(59,130,246,0.12); color: #93C5FD; border: 1px solid rgba(59,130,246,0.25); }
+        .score { font-family: 'Fraunces', sans-serif; font-size: 20px; font-weight: 700; }
+        .num { font-family: 'Fraunces', sans-serif; font-size: 13px; color: var(--accent-blue); margin: 12px 0 4px; }
+        .classe { font-size: 15px; font-weight: 600; }
+        .motivo { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-top: 8px; }
+        .foot { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 11px; color: var(--text-tertiary); }
+        .pill { background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 6px; }
+    
+        /* --- Grayscale & Satoshi/Fraunces Overrides --- */
+        html {
+            filter: grayscale(100%) !important;
+            background-color: #06070a !important;
+        }
+        * {
+            font-family: 'Satoshi', system-ui, -apple-system, sans-serif !important;
+        }
+        h1, h2, h3, .top h1 {
+            font-family: 'Fraunces', Georgia, serif !important;
+            font-weight: 500 !important;
+            letter-spacing: -0.01em !important;
+        }
+        .badge {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #FFFFFF !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.02) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        .num {
+            color: #FFFFFF !important;
+        }
+        
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="top">
+        <button class="back" onclick="history.back()">←</button>
+        <h1>Oportunidades</h1>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+          <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+              <polygon points="50,5 89,27 89,72 50,95 11,72 11,27"/>
+              <polygon points="50,20 75,35 75,65 50,80 25,65 25,35"/>
+              <line x1="50" y1="5" x2="50" y2="95"/><line x1="11" y1="27" x2="89" y2="72"/><line x1="11" y1="72" x2="89" y2="27"/>
+              <line x1="50" y1="5" x2="25" y2="35"/><line x1="50" y1="5" x2="75" y2="35"/>
+              <line x1="89" y1="27" x2="50" y2="20"/><line x1="89" y1="27" x2="75" y2="65"/>
+              <line x1="89" y1="72" x2="75" y2="35"/><line x1="89" y1="72" x2="50" y2="80"/>
+              <line x1="50" y1="95" x2="75" y2="65"/><line x1="50" y1="95" x2="25" y2="65"/>
+              <line x1="11" y1="72" x2="50" y2="80"/><line x1="11" y1="72" x2="25" y2="35"/>
+              <line x1="11" y1="27" x2="25" y2="65"/><line x1="11" y1="27" x2="50" y2="20"/>
+            </g>
+            <g fill="#ffffff" opacity="0.6">
+              <circle cx="50" cy="5" r="7"/><circle cx="89" cy="27" r="7"/><circle cx="89" cy="72" r="7"/>
+              <circle cx="50" cy="95" r="7"/><circle cx="11" cy="72" r="7"/><circle cx="11" cy="27" r="7"/>
+              <circle cx="50" cy="20" r="6"/><circle cx="75" cy="35" r="6"/><circle cx="75" cy="65" r="6"/>
+              <circle cx="50" cy="80" r="6"/><circle cx="25" cy="65" r="6"/><circle cx="25" cy="35" r="6"/>
+              <circle cx="50" cy="50" r="7"/>
+            </g>
+          </svg>
+          <span style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:rgba(255,255,255,0.4);letter-spacing:-0.02em;">ROSS<span style="font-weight:400;"> AI</span></span>
+        </div>
+    </div>
+    <p class="sub" id="op-sub">Carregando…</p>
+    <div id="op-list"></div>
+</div>
+
+<script>
+    const esc = (s) => { const d = document.createElement('div'); d.innerText = s == null ? '' : String(s); return d.innerHTML; };
+
+    function badgeClass(o) {
+        if (o.score >= 85) return 'b-urgent';
+        if (o.tipo && o.tipo.toLowerCase().includes('parado')) return 'b-info';
+        if (o.score >= 70) return 'b-warn';
+        return 'b-info';
+    }
+
+    (async function load() {
+        const list = document.getElementById('op-list');
+        const sub = document.getElementById('op-sub');
+        try {
+            const r = await fetch('/api/oportunidades');
+            const d = await r.json();
+            const ops = d.oportunidades || [];
+            sub.textContent = ops.length
+                ? `${ops.length} oportunidade(s) ranqueada(s) por sinais reais.`
+                : 'Nenhuma por enquanto.';
+            if (!ops.length) {
+                list.innerHTML = '<div class="empty">Consulte alguns processos pelo Ross AI para o motor identificar oportunidades (prazos, processos parados, clientes recorrentes).</div>';
+                return;
+            }
+            list.innerHTML = ops.map((o) => `
+                <div class="card" onclick="location.href='processo.html?cnj=${encodeURIComponent(o.numero)}'">
+                    <div class="row">
+                        <span class="badge ${badgeClass(o)}">${esc(o.tipo)}</span>
+                        <span class="score">${o.score}</span>
+                    </div>
+                    <div class="num">${esc(o.numero)}</div>
+                    <div class="classe">${esc(o.classe || 'Processo')}</div>
+                    <div class="motivo">${esc(o.motivo)}</div>
+                    <div class="foot">
+                        <span class="pill">${esc(o.tribunal || '—')}</span>
+                        ${o.dias_parado ? `<span class="pill">${o.dias_parado} dias s/ movimentação</span>` : ''}
+                    </div>
+                </div>`).join('');
+        } catch (e) {
+            sub.textContent = 'Erro ao carregar.';
+            list.innerHTML = '<div class="empty">Não foi possível falar com o backend. Verifique se o servidor Go está rodando.</div>';
+        }
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Processo Detalhado - Rossflow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        /* Esconder barra de rolagem mas permitir scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overscroll-behavior-y: none;
+            background-color: #050B14; /* Fundo base super escuro atualizado */
+            color: #f8fafc;
+        }
+
+        /* Ajuste Global para Ícones mais Premium e Finos */
+        .lucide {
+            stroke-width: 1.5;
+        }
+
+        /* Efeito Liquid Glass Premium (Atualizado) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-panel-hover:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        
+        .glass-button {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-button:active {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(0.96);
+        }
+
+        /* Text Gradients para Inteligência Artificial */
+        .ai-text-gradient {
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animação Customizada Gerar IA (Laser Scanner) */
+        .btn-ai-scan {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-ai-scan::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.8), transparent);
+            transform: skewX(-20deg);
+            animation: scan-laser 1.2s infinite;
+        }
+        @keyframes scan-laser {
+            0% { left: -100%; }
+            100% { left: 200%; }
+        }
+
+        /* Animação "A Pensar" (3 pontinhos da IA) */
+        @keyframes typing-dot {
+            0%, 100% { transform: translateY(0); opacity: 0.3; }
+            50% { transform: translateY(-3px); opacity: 1; box-shadow: 0 0 8px rgba(34,211,238,0.8); }
+        }
+        .dot-1 { animation: typing-dot 1.2s infinite ease-in-out both; animation-delay: -0.32s; }
+        .dot-2 { animation: typing-dot 1.2s infinite ease-in-out both; animation-delay: -0.16s; }
+        .dot-3 { animation: typing-dot 1.2s infinite ease-in-out both; }
+    
+        /* --- Grayscale & Satoshi/Fraunces Overrides --- */
+        html {
+            filter: grayscale(100%) !important;
+            background-color: #06070a !important;
+        }
+        * {
+            font-family: 'Satoshi', system-ui, -apple-system, sans-serif !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', Georgia, serif !important;
+            font-weight: 500 !important;
+            letter-spacing: -0.01em !important;
+        }
+        
+    </style>
+</head>
+<body class="antialiased relative min-h-[100dvh]">
+
+    <!-- Halos de Fundo (Auroras) -->
+    <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/20 blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none z-0"></div>
+
+    <!-- App Container -->
+    <main class="w-full h-[100dvh] overflow-hidden flex flex-col relative z-10">
+        
+        <!-- Secção Superior (Header Glass) -->
+        <div class="flex-shrink-0 z-20 bg-[#050B14]/80 backdrop-blur-xl border-b border-white/5">
+            
+            <!-- Cabeçalho -->
+            <header class="flex items-center justify-between px-4 py-4 pt-6">
+                <button onclick="history.back()" class="p-2 rounded-full glass-button text-white">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
+                <div class="ml-3 flex-1 flex items-center gap-2">
+                  <svg width="18" height="18" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#ffffff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.7">
+                      <polygon points="50,5 89,27 89,72 50,95 11,72 11,27"/>
+                      <polygon points="50,20 75,35 75,65 50,80 25,65 25,35"/>
+                      <line x1="50" y1="5" x2="50" y2="95"/><line x1="11" y1="27" x2="89" y2="72"/><line x1="11" y1="72" x2="89" y2="27"/>
+                      <line x1="50" y1="5" x2="25" y2="35"/><line x1="50" y1="5" x2="75" y2="35"/>
+                      <line x1="89" y1="27" x2="50" y2="20"/><line x1="89" y1="27" x2="75" y2="65"/>
+                      <line x1="89" y1="72" x2="75" y2="35"/><line x1="89" y1="72" x2="50" y2="80"/>
+                      <line x1="50" y1="95" x2="75" y2="65"/><line x1="50" y1="95" x2="25" y2="65"/>
+                      <line x1="11" y1="72" x2="50" y2="80"/><line x1="11" y1="72" x2="25" y2="35"/>
+                      <line x1="11" y1="27" x2="25" y2="65"/><line x1="11" y1="27" x2="50" y2="20"/>
+                    </g>
+                    <g fill="#ffffff" opacity="0.7">
+                      <circle cx="50" cy="5" r="7"/><circle cx="89" cy="27" r="7"/><circle cx="89" cy="72" r="7"/>
+                      <circle cx="50" cy="95" r="7"/><circle cx="11" cy="72" r="7"/><circle cx="11" cy="27" r="7"/>
+                      <circle cx="50" cy="20" r="6"/><circle cx="75" cy="35" r="6"/><circle cx="75" cy="65" r="6"/>
+                      <circle cx="50" cy="80" r="6"/><circle cx="25" cy="65" r="6"/><circle cx="25" cy="35" r="6"/>
+                      <circle cx="50" cy="50" r="7"/>
+                    </g>
+                  </svg>
+                  <h1 class="text-[18px] font-bold text-white tracking-wide">Processo Detalhado</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <!-- Botão de Compartilhar -->
+                    <button onclick="openSheet('sheetShare')" class="p-2 rounded-full glass-button text-white">
+                        <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Informações do Processo -->
+            <div class="px-5 pt-3 pb-5">
+                <p id="pd-cnj" class="text-[12px] text-slate-400 mb-1 tracking-wider uppercase font-medium">CNJ —</p>
+                <h2 id="pd-titulo" class="text-[26px] font-black text-white leading-tight tracking-tight">Carregando…</h2>
+                <p class="text-[14px] text-slate-400 mt-1 flex items-center gap-1.5">
+                    <i data-lucide="landmark" class="w-4 h-4 text-slate-500"></i> <span id="pd-tribunal">—</span>
+                </p>
+
+                <!-- Botões de Ação -->
+                <div class="flex gap-2.5 mt-6">
+                    <button onclick="toggleMonitor()" id="btnMonitor" class="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-500 text-white border border-emerald-400/30 py-2.5 px-2 rounded-xl text-[13px] font-bold shadow-[0_0_15px_rgba(16,185,129,0.25)] transition-all duration-300 active:scale-95">
+                        <span id="txtMonitor">Monitorar</span>
+                        <div id="switchBg" class="w-9 h-5 bg-white/30 rounded-full relative transition-colors duration-300 flex-shrink-0">
+                            <div id="switchDot" class="w-4 h-4 bg-white rounded-full absolute left-0.5 top-0.5 shadow-sm transition-transform duration-300 translate-x-4"></div>
+                        </div>
+                    </button>
+                    <!-- Botão Dossiê com gatilho para o menu -->
+                    <button onclick="openSheet('sheetDossie')" class="flex-1 flex items-center justify-center gap-2 glass-button text-slate-200 py-2.5 px-2 rounded-xl text-[13px] font-semibold">
+                        <i data-lucide="folder" class="w-4 h-4 text-slate-400"></i> Dossiê
+                    </button>
+                    <!-- Botão Cobrar COM GATILHO -->
+                    <button onclick="openSheet('sheetCobrar')" class="flex-1 flex items-center justify-center gap-2 glass-button text-slate-200 py-2.5 px-2 rounded-xl text-[13px] font-semibold">
+                        <i data-lucide="receipt" class="w-4 h-4 text-slate-400"></i> Cobrar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Abas de Navegação -->
+            <div class="px-5 flex gap-6 overflow-x-auto no-scrollbar relative" id="tabs-container">
+                <button onclick="switchTab('diagnostico', this)" class="tab-btn pb-3 border-b-[2px] border-cyan-400 text-cyan-400 font-bold text-[14px] whitespace-nowrap transition-colors uppercase tracking-wider">Diagnóstico</button>
+                <button onclick="switchTab('movimentacoes', this)" class="tab-btn pb-3 border-b-[2px] border-transparent text-slate-500 hover:text-slate-300 font-bold text-[14px] whitespace-nowrap transition-colors uppercase tracking-wider">Movimentações</button>
+                <button onclick="switchTab('partes', this)" class="tab-btn pb-3 border-b-[2px] border-transparent text-slate-500 hover:text-slate-300 font-bold text-[14px] whitespace-nowrap transition-colors uppercase tracking-wider">Partes</button>
+                <button onclick="switchTab('restricoes', this)" class="tab-btn pb-3 border-b-[2px] border-transparent text-slate-500 hover:text-slate-300 font-bold text-[14px] whitespace-nowrap transition-colors uppercase tracking-wider">Restrições</button>
+                <button onclick="switchTab('documentos', this)" class="tab-btn pb-3 border-b-[2px] border-transparent text-slate-500 hover:text-slate-300 font-bold text-[14px] whitespace-nowrap transition-colors uppercase tracking-wider">Documentos</button>
+            </div>
+        </div>
+
+        <!-- Área de Conteúdo -->
+        <div class="flex-1 overflow-y-auto p-4 pb-12 relative z-10 no-scrollbar">
+            
+            <!-- CONTEÚDO: DIAGNÓSTICO -->
+            <div id="content-diagnostico" class="tab-content space-y-6">
+                <!-- Cartão Diagnóstico IA -->
+                <div class="glass-panel rounded-[24px] p-5 relative overflow-hidden">
+                    <!-- Brilho de radar IA interno -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <h3 class="text-[18px] font-black text-white flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-cyan-400"></i> 
+                        <span class="ai-text-gradient">AI Diagnosis Insight</span>
+                    </h3>
+                    
+                    <div class="mt-4">
+                        <h4 class="text-[12px] font-bold text-slate-400 flex items-center gap-1.5 mb-2 uppercase tracking-widest">
+                            Resumo do Caso
+                        </h4>
+                        
+                        <!-- Container da Animação do Resumo -->
+                        <div id="summary-container" class="relative min-h-[70px]">
+                            <!-- Fase 1: Esqueleto de Carregamento com Laser Scanner -->
+                            <div id="summary-skeleton" class="space-y-2.5 pt-1">
+                                <div class="h-2.5 bg-white/5 rounded-full w-full overflow-hidden relative btn-ai-scan"></div>
+                                <div class="h-2.5 bg-white/5 rounded-full w-[85%] overflow-hidden relative btn-ai-scan"></div>
+                                <div class="h-2.5 bg-white/5 rounded-full w-[60%] overflow-hidden relative btn-ai-scan"></div>
+                            </div>
+                            
+                            <!-- Fase 2: Texto Gerado pela IA (Escondido no início) -->
+                            <p id="ai-summary-text" class="text-[14px] text-slate-300 leading-relaxed font-medium hidden">
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Indicador de "A pensar / A calcular métricas" -->
+                    <div id="ai-thinking" class="flex items-center gap-2 mt-5 hidden">
+                        <div class="flex gap-1.5 bg-white/5 border border-white/10 px-3 py-2 rounded-full">
+                            <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full dot-1"></div>
+                            <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full dot-2"></div>
+                            <div class="w-1.5 h-1.5 bg-cyan-400 rounded-full dot-3"></div>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest animate-pulse">A calcular métricas...</span>
+                    </div>
+
+                    <!-- Badges de Métricas (Escondidos inicialmente) -->
+                    <div id="ai-badges" class="flex flex-wrap gap-2 mt-5 opacity-0 hidden transition-all duration-700 transform translate-y-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 tracking-wide uppercase">
+                            <i data-lucide="circle-alert" class="w-3.5 h-3.5"></i> Risco: Médio
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 tracking-wide uppercase">
+                            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Oportunidade: Alta
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 tracking-wide uppercase">
+                            <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Potencial: 85%
+                        </span>
+                    </div>
+
+                    <!-- Detalhes Expansíveis (Riscos e Oportunidades - Escondidos inicialmente) -->
+                    <div id="ai-details-wrapper" class="grid grid-rows-[0fr] opacity-0 transition-all duration-1000 ease-out">
+                        <div class="overflow-hidden">
+                            <div class="pt-6 space-y-4">
+                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-[16px] border border-white/5">
+                                    <div class="bg-amber-500/10 p-2 rounded-full flex-shrink-0">
+                                        <i data-lucide="triangle-alert" class="w-4 h-4 text-amber-400"></i>
+                                    </div>
+                                    <p class="text-[13px] text-slate-300 leading-snug pt-0.5">
+                                        <strong class="font-bold text-white">Riscos:</strong> Falta de prova documental robusta no anexo 4, o que pode ser explorado pela defesa. Atenção à prescrição trienal.
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-3 bg-white/5 p-3 rounded-[16px] border border-white/5">
+                                    <div class="bg-emerald-500/10 p-2 rounded-full flex-shrink-0">
+                                        <i data-lucide="wand-2" class="w-4 h-4 text-emerald-400"></i>
+                                    </div>
+                                    <p class="text-[13px] text-slate-300 leading-snug pt-0.5">
+                                        <strong class="font-bold text-white">Oportunidades:</strong> Inversão do ônus da prova via CDC. Jurisprudência consolidada da 4ª Turma do TJSP é extremamente favorável.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Próximos Passos (Com Animação de Blur Inicial) -->
+                <div>
+                    <h3 class="text-[18px] font-bold text-white mb-4 px-1 flex items-center gap-2">
+                        Próximos Passos
+                        <i id="pp-loading-icon" data-lucide="loader-2" class="w-4 h-4 text-cyan-400 animate-spin"></i>
+                    </h3>
+                    
+                    <div class="relative">
+                        <!-- Scanner Overlay (Esconde-se quando termina) -->
+                        <div id="pp-scanner" class="absolute inset-0 z-20 btn-ai-scan rounded-[20px] overflow-hidden pointer-events-none transition-opacity duration-500"></div>
+                        
+                        <!-- Conteúdo (Começa encolhido, desfocado e transparente) -->
+                        <div id="pp-content" class="space-y-3 blur-[6px] opacity-40 scale-[0.98] pointer-events-none transition-all duration-1000 ease-out">
+                            <!-- Tarefa 1 -->
+                            <div class="glass-panel glass-panel-hover rounded-[20px] p-4 flex items-center justify-between group transition-all">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded-full border-2 border-slate-600 flex-shrink-0"></div>
+                                    <div>
+                                        <h4 class="text-[14px] font-bold text-white">Protocolar Petição</h4>
+                                        <p class="text-[12px] text-slate-400 mt-0.5">IA recomenda agir em 48h.</p>
+                                    </div>
+                                </div>
+                                <button onclick="iniciarGeracaoIA(this)" class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[11px] font-black uppercase tracking-wider px-3 py-2 rounded-xl whitespace-nowrap hover:bg-cyan-500/20 transition-all duration-300 flex items-center justify-center gap-1.5 min-w-[130px]">
+                                    <span>Gerar com IA</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Tarefa 2 -->
+                            <div class="glass-panel glass-panel-hover rounded-[20px] p-4 flex items-center justify-between group transition-all">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded-full border-2 border-slate-600 flex-shrink-0"></div>
+                                    <div>
+                                        <h4 class="text-[14px] font-bold text-white">Gerar Cobrança</h4>
+                                        <p class="text-[12px] text-slate-400 mt-0.5">Oportunidade de acordo favorável.</p>
+                                    </div>
+                                </div>
+                                <button class="bg-white/5 text-slate-300 border border-white/10 text-[11px] font-black uppercase tracking-wider px-3 py-2 rounded-xl whitespace-nowrap hover:bg-white/10 transition-colors">
+                                    Gerar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO: MOVIMENTAÇÕES -->
+            <div id="content-movimentacoes" class="tab-content hidden space-y-4">
+                <div class="flex items-center justify-between mb-4 px-1">
+                    <h3 class="text-[18px] font-bold text-white">Histórico Recente</h3>
+                    <span class="flex items-center gap-1.5 text-[11px] font-bold text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded-md uppercase tracking-wider">
+                        <div class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></div> Ao Vivo
+                    </span>
+                </div>
+                
+                <div class="relative pl-4 border-l border-slate-700/50 space-y-6 ml-2">
+                    <div class="relative">
+                        <div class="absolute -left-[21px] top-1 w-3 h-3 bg-cyan-400 rounded-full shadow-[0_0_8px_rgba(34,211,238,0.8)] border-[2px] border-[#050B14]"></div>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">23/04/2026 - 14:30</p>
+                        <div class="glass-panel glass-panel-hover transition-all p-4 rounded-xl mt-2 relative group">
+                            <div class="pr-8">
+                                <p class="text-[14px] font-bold text-white">Conclusos para Decisão</p>
+                                <p class="text-[13px] text-slate-300 mt-1">Processo remetido ao gabinete do juiz para análise de pedido de tutela antecipada.</p>
+                            </div>
+                            <button class="absolute top-4 right-4 text-slate-500 hover:text-white active:scale-90 transition-all" title="Copiar">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -left-[21px] top-1 w-3 h-3 bg-slate-600 rounded-full border-[2px] border-[#050B14]"></div>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">18/04/2026 - 09:15</p>
+                        <div class="glass-panel glass-panel-hover transition-all p-4 rounded-xl mt-2 relative group">
+                            <div class="pr-8">
+                                <p class="text-[14px] font-bold text-white">Juntada de Petição</p>
+                                <p class="text-[13px] text-slate-400 mt-1">Manifestação da parte Ré apresentando documentos complementares.</p>
+                            </div>
+                            <button class="absolute top-4 right-4 text-slate-500 hover:text-white active:scale-90 transition-all" title="Copiar">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -left-[21px] top-1 w-3 h-3 bg-slate-600 rounded-full border-[2px] border-[#050B14]"></div>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">10/04/2026 - 16:45</p>
+                        <div class="glass-panel glass-panel-hover transition-all p-4 rounded-xl mt-2 relative group">
+                            <div class="pr-8">
+                                <p class="text-[14px] font-bold text-white">Publicado Despacho</p>
+                                <p class="text-[13px] text-slate-400 mt-1">Intimação das partes para especificarem as provas que pretendem produzir.</p>
+                            </div>
+                            <button class="absolute top-4 right-4 text-slate-500 hover:text-white active:scale-90 transition-all" title="Copiar">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO: PARTES -->
+            <div id="content-partes" class="tab-content hidden space-y-4">
+                <h3 class="text-[18px] font-bold text-white mb-2 px-1">Pólos do Processo</h3>
+                
+                <!-- Polo Ativo -->
+                <button onclick="openSheet('sheetContato')" class="w-full text-left glass-panel glass-panel-hover rounded-[20px] p-4 active:scale-[0.98] transition-all duration-200 block">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-widest">Pólo Ativo (Autor)</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white/5 p-2.5 rounded-full text-cyan-400 border border-white/5"><i data-lucide="user" class="w-5 h-5"></i></div>
+                        <div>
+                            <p class="text-[15px] font-bold text-white">Maria Fernanda Oliveira</p>
+                            <p class="text-[12px] text-slate-400 mt-0.5 tracking-wide">CPF: ***.123.456-**</p>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- Polo Passivo -->
+                <button onclick="openSheet('sheetContato')" class="w-full text-left glass-panel glass-panel-hover rounded-[20px] p-4 active:scale-[0.98] transition-all duration-200 block">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-widest">Pólo Passivo (Réu)</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white/5 p-2.5 rounded-full text-purple-400 border border-white/5">
+                            <i data-lucide="building-2" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[15px] font-bold text-white">Telecomunicações Brasil S.A.</p>
+                            <p class="text-[12px] text-slate-400 mt-0.5 tracking-wide">CNPJ: 12.345.678/0001-90</p>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- Botão Adicionar Parte -->
+                <button onclick="openSheet('sheetNovaParte')" class="w-full mt-4 glass-button rounded-[20px] p-4 flex items-center gap-4">
+                    <div class="bg-white/5 w-10 h-10 rounded-full flex items-center justify-center text-slate-300 flex-shrink-0">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </div>
+                    <div class="text-left flex-1">
+                        <span class="block text-[14px] font-bold text-white">Adicionar Parte</span>
+                        <span class="block text-[12px] text-slate-400 mt-0.5">Testemunha, perito, terceiro...</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+            </div>
+
+            <!-- CONTEÚDO: RESTRIÇÕES -->
+            <div id="content-restricoes" class="tab-content hidden space-y-4">
+                <h3 class="text-[18px] font-bold text-white mb-2 px-1">Bloqueios e Restrições</h3>
+                
+                <div class="glass-panel glass-panel-hover transition-all rounded-[20px] p-4 flex items-start gap-3 relative group">
+                    <div class="bg-amber-500/10 p-2.5 rounded-full text-amber-400 border border-amber-500/20 flex-shrink-0 mt-0.5"><i data-lucide="landmark" class="w-5 h-5"></i></div>
+                    <div class="flex-1 pr-6">
+                        <h4 class="text-[14px] font-bold text-white">Bacenjud (Financeiro)</h4>
+                        <p class="text-[13px] text-slate-300 mt-1 leading-snug">Bloqueio ativo de <strong class="text-white">R$ 5.430,00</strong> nas contas da parte Ré.</p>
+                    </div>
+                    <button class="absolute top-4 right-4 text-slate-500 hover:text-white active:scale-90 transition-all" title="Copiar">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- Protestos / Negativações -->
+                <button onclick="openSheet('sheetProtestos')" class="w-full text-left glass-panel glass-panel-hover transition-all rounded-[20px] p-4 flex items-start gap-3 relative active:scale-[0.98] duration-200 block mt-4 group">
+                    <div class="bg-rose-500/10 p-2.5 rounded-full text-rose-400 border border-rose-500/20 flex-shrink-0 mt-0.5">
+                        <i data-lucide="file-warning" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1 pr-6">
+                        <h4 class="text-[14px] font-bold text-white">Protestos e Negativações</h4>
+                        <p class="text-[13px] text-slate-300 mt-1 leading-snug">Encontrados 2 apontamentos de dívida ativa/protesto.</p>
+                    </div>
+                    <div class="absolute top-4 right-4 text-slate-500 group-hover:text-white transition-colors">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </div>
+                </button>
+
+                <!-- Botão Adicionar Restrição -->
+                <button onclick="openSheet('sheetNovaRestricao')" class="w-full mt-4 glass-button rounded-[20px] p-4 flex items-center gap-4">
+                    <div class="bg-white/5 w-10 h-10 rounded-full flex items-center justify-center text-slate-300 flex-shrink-0">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </div>
+                    <div class="text-left flex-1">
+                        <span class="block text-[14px] font-bold text-white">Adicionar Restrição</span>
+                        <span class="block text-[12px] text-slate-400 mt-0.5">Inserir bloqueio manualmente</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+            </div>
+
+            <!-- CONTEÚDO: DOCUMENTOS -->
+            <div id="content-documentos" class="tab-content hidden space-y-4">
+                <h3 class="text-[18px] font-bold text-white mb-2 px-1">Anexos do Processo</h3>
+                <div class="space-y-3">
+                    
+                    <!-- PDF 1 -->
+                    <button class="w-full text-left glass-panel glass-panel-hover p-4 rounded-[20px] flex items-center justify-between group active:scale-[0.98] transition-all duration-300 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:border-rose-500/30">
+                        <div class="flex items-center gap-3.5">
+                            <div class="bg-gradient-to-br from-rose-500/20 to-rose-600/5 border border-rose-500/20 p-2.5 rounded-[14px] text-rose-400 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[14px] font-bold text-white group-hover:text-rose-400 transition-colors">Petição Inicial.pdf</p>
+                                <p class="text-[12px] text-slate-400 mt-0.5">2.4 MB <span class="mx-1 opacity-50">•</span> 15/01/2026</p>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-2 rounded-full text-slate-400 group-hover:bg-rose-500/20 group-hover:text-rose-400 transition-colors">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </div>
+                    </button>
+                    
+                    <!-- PDF 2 -->
+                    <button class="w-full text-left glass-panel glass-panel-hover p-4 rounded-[20px] flex items-center justify-between group active:scale-[0.98] transition-all duration-300 hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:border-rose-500/30">
+                        <div class="flex items-center gap-3.5">
+                            <div class="bg-gradient-to-br from-rose-500/20 to-rose-600/5 border border-rose-500/20 p-2.5 rounded-[14px] text-rose-400 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[14px] font-bold text-white group-hover:text-rose-400 transition-colors">Procuração_Assinada.pdf</p>
+                                <p class="text-[12px] text-slate-400 mt-0.5">450 KB <span class="mx-1 opacity-50">•</span> 15/01/2026</p>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-2 rounded-full text-slate-400 group-hover:bg-rose-500/20 group-hover:text-rose-400 transition-colors">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </div>
+                    </button>
+
+                    <!-- DOCX -->
+                    <button class="w-full text-left glass-panel glass-panel-hover p-4 rounded-[20px] flex items-center justify-between group active:scale-[0.98] transition-all duration-300 hover:shadow-[0_0_20px_rgba(56,189,248,0.15)] hover:border-sky-500/30">
+                        <div class="flex items-center gap-3.5">
+                            <div class="bg-gradient-to-br from-sky-500/20 to-blue-600/5 border border-sky-500/20 p-2.5 rounded-[14px] text-sky-400 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_10px_rgba(56,189,248,0.1)]">
+                                <i data-lucide="file-code" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[14px] font-bold text-white group-hover:text-sky-400 transition-colors">Manifestação_Réu.docx</p>
+                                <p class="text-[12px] text-slate-400 mt-0.5">1.2 MB <span class="mx-1 opacity-50">•</span> 18/04/2026</p>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-2 rounded-full text-slate-400 group-hover:bg-sky-500/20 group-hover:text-sky-400 transition-colors">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </div>
+                    </button>
+
+                    <!-- Botão Adicionar "Liquid Glass Premium" -->
+                    <button class="w-full mt-4 glass-button border border-dashed border-white/20 hover:border-cyan-400/40 rounded-[20px] p-5 flex flex-col items-center justify-center gap-3 transition-all duration-300 active:scale-[0.98] group hover:shadow-[0_0_20px_rgba(34,211,238,0.1)] hover:bg-cyan-500/5">
+                        <div class="bg-cyan-500/10 border border-cyan-500/20 w-12 h-12 rounded-full flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                            <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-[14px] font-bold text-cyan-400 tracking-wide">Adicionar Documento</span>
+                            <span class="block text-[12px] text-slate-400 mt-1">Digitalizar, foto ou arquivo</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- OVERLAY ESCURO -->
+    <div id="overlay" onclick="closeAllSheets()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- ============================================== -->
+    <!-- BOTTOM SHEET: DOSSIÊ (Para Advogados)          -->
+    <!-- ============================================== -->
+    <div id="sheetDossie" class="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 shadow-2xl pb-8">
+        <div class="px-6 pt-4 pb-2">
+            <!-- Puxador (Handle) -->
+            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
+            
+            <h3 class="text-[18px] font-bold text-white mb-1">Gerar Dossiê</h3>
+            <p class="text-[13px] text-slate-400 mb-6">Selecione o formato ideal para exportação.</p>
+
+            <div class="space-y-3">
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-gradient-to-br from-blue-600 to-cyan-500 text-white p-3 rounded-full flex-shrink-0 shadow-[0_0_15px_rgba(14,165,233,0.3)]">
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Dossiê Completo</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Peças, IA Insight e histórico total.</p>
+                    </div>
+                    <i data-lucide="download-cloud" class="w-5 h-5 text-slate-500"></i>
+                </button>
+
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-3 rounded-full flex-shrink-0">
+                        <i data-lucide="message-square" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Resumo para Cliente</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Linguagem simples e status atual.</p>
+                    </div>
+                    <i data-lucide="share" class="w-5 h-5 text-slate-500"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- BOTTOM SHEET: COMPARTILHAR COM EQUIPE          -->
+    <!-- ============================================== -->
+    <div id="sheetShare" class="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 shadow-2xl pb-5">
+        <div class="px-6 pt-4 pb-2">
+            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-4"></div>
+            
+            <h3 class="text-[17px] font-bold text-center text-white mb-4">Compartilhar Processo</h3>
+
+            <div class="flex gap-3 overflow-x-auto no-scrollbar pb-4 border-b border-white/10">
+                <div class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-90 transition-transform">
+                    <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center border-[1.5px] border-[#0f172a] shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                        <span class="font-bold text-[14px]">CL</span>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-300">Carlos</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-90 transition-transform">
+                    <div class="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center border-[1.5px] border-[#0f172a] shadow-[0_0_15px_rgba(147,51,234,0.4)]">
+                        <span class="font-bold text-[14px]">AM</span>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-300">Dra. Ana</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-90 transition-transform">
+                    <div class="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center border-[1.5px] border-[#0f172a] shadow-[0_0_15px_rgba(5,150,105,0.4)]">
+                        <span class="font-bold text-[14px]">RP</span>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-300">Rafael</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-90 transition-transform">
+                    <div class="w-12 h-12 bg-white/5 border border-white/20 text-slate-300 rounded-full flex items-center justify-center">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-400">Novo...</span>
+                </div>
+            </div>
+
+            <div class="mt-4 space-y-2">
+                <button class="w-full glass-button p-3 rounded-[16px] flex items-center gap-3 text-left">
+                    <div class="bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30 p-2 rounded-full flex-shrink-0">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    </div>
+                    <span class="flex-1 text-[13px] font-bold text-white">Enviar por WhatsApp</span>
+                </button>
+                <button class="w-full glass-button p-3 rounded-[16px] flex items-center gap-3 text-left">
+                    <div class="bg-white/10 text-white border border-white/10 p-2 rounded-full flex-shrink-0">
+                        <i data-lucide="link" class="w-4 h-4"></i>
+                    </div>
+                    <span class="flex-1 text-[13px] font-bold text-white">Copiar Link do Processo</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- BOTTOM SHEET: COBRAR                           -->
+    <!-- ============================================== -->
+    <div id="sheetCobrar" class="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 shadow-2xl pb-8">
+        <div class="px-6 pt-4 pb-2">
+            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
+            
+            <h3 class="text-[18px] font-bold text-white mb-1">Cobranças</h3>
+            <p class="text-[13px] text-slate-400 mb-6">Selecione o que deseja cobrar do cliente ou parte.</p>
+
+            <div class="space-y-3">
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-blue-500/10 text-blue-400 border border-blue-500/20 p-3 rounded-full flex-shrink-0">
+                        <i data-lucide="landmark" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Custas Processuais</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Enviar guia de pagamento.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-3 rounded-full flex-shrink-0">
+                        <i data-lucide="banknote" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Honorários (Pix/Boleto)</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Gerar link de pagamento.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- BOTTOM SHEET: DETALHES DE PROTESTOS            -->
+    <!-- ============================================== -->
+    <div id="sheetProtestos" class="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 shadow-2xl pb-8 max-h-[85vh] overflow-y-auto no-scrollbar">
+        <div class="px-6 pt-4 pb-2">
+            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
+            
+            <h3 class="text-[18px] font-bold text-white mb-1">Detalhamento de Restrições</h3>
+            <p class="text-[13px] text-slate-400 mb-6">Fontes e valores dos apontamentos encontrados.</p>
+
+            <div class="space-y-3">
+                <div class="glass-panel p-4 rounded-[20px] flex items-start justify-between">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-rose-500/10 text-rose-400 border border-rose-500/20 p-2.5 rounded-full flex-shrink-0">
+                            <i data-lucide="building" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Cartório de Protesto</p>
+                            <p class="text-[14px] font-bold text-white mt-1">1º Tabelião de Protestos de SP</p>
+                            <p class="text-[13px] text-slate-300 mt-1">Valor: <strong class="text-white">R$ 1.250,00</strong></p>
+                            <p class="text-[11px] text-slate-500 mt-1">Data: 10/01/2026</p>
+                        </div>
+                    </div>
+                    <button class="p-2 text-slate-500 hover:text-white transition-all">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <div class="glass-panel p-4 rounded-[20px] flex items-start justify-between">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-rose-500/10 text-rose-400 border border-rose-500/20 p-2.5 rounded-full flex-shrink-0">
+                            <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Órgão de Proteção</p>
+                            <p class="text-[14px] font-bold text-white mt-1">Serasa Experian</p>
+                            <p class="text-[13px] text-slate-300 mt-1">Valor: <strong class="text-white">R$ 4.320,00</strong></p>
+                            <p class="text-[11px] text-slate-500 mt-1">Data: 05/11/2025</p>
+                        </div>
+                    </div>
+                    <button class="p-2 text-slate-500 hover:text-white transition-all">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <button class="w-full mt-2 glass-button p-4 rounded-[20px] flex items-center justify-center gap-2">
+                    <i data-lucide="copy-check" class="w-4 h-4 text-cyan-400"></i>
+                    <span class="text-[14px] font-bold text-cyan-400 uppercase tracking-wide">Copiar Relatório</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- BOTTOM SHEET: CONTATOS DA PARTE                -->
+    <!-- ============================================== -->
+    <div id="sheetContato" class="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 shadow-2xl pb-8 max-h-[85vh] overflow-y-auto no-scrollbar">
+        <div class="px-6 pt-4 pb-2">
+            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
+            
+            <h3 class="text-[18px] font-bold text-white mb-1">Dados de Comunicação</h3>
+            <p class="text-[13px] text-slate-400 mb-6">Informações de contato da parte selecionada.</p>
+
+            <div class="space-y-3">
+                <div class="glass-panel p-4 rounded-[20px] flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-blue-500/10 text-blue-400 border border-blue-500/20 p-2.5 rounded-full flex-shrink-0">
+                            <i data-lucide="mail" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">E-mail</p>
+                            <p class="text-[14px] font-bold text-white mt-0.5">contato@exemplo.com</p>
+                        </div>
+                    </div>
+                    <button class="p-2 text-slate-500 hover:text-white transition-all">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <div class="glass-panel p-4 rounded-[20px] flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-2.5 rounded-full flex-shrink-0">
+                            <i data-lucide="phone" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Telefone / WhatsApp</p>
+                            <p class="text-[14px] font-bold text-white mt-0.5">(11) 98765-4321</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1">
+                        <button class="p-2 text-slate-500 hover:text-white transition-all">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                        <button class="p-2 text-[#25D366] transition-all">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- BOTTOM SHEETS GENÉRICOS (Nova Restrição/Parte) -->
+    <!-- ============================================== -->
+    <div id="sheetNovaRestricao" class="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 shadow-2xl pb-8 max-h-[85vh] overflow-y-auto no-scrollbar">
+        <div class="px-6 pt-4 pb-2">
+            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-[18px] font-bold text-white mb-1">Nova Restrição</h3>
+            <p class="text-[13px] text-slate-400 mb-6">Selecione o tipo de bloqueio a inserir.</p>
+            <div class="space-y-3">
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-amber-500/10 text-amber-400 border border-amber-500/20 p-3 rounded-full flex-shrink-0"><i data-lucide="landmark" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Sisbajud / Bacenjud</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Bloqueio de ativos financeiros.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-slate-500/10 text-slate-400 border border-slate-500/20 p-3 rounded-full flex-shrink-0"><i data-lucide="car" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Renajud</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Restrição de veículos.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-rose-500/10 text-rose-400 border border-rose-500/20 p-3 rounded-full flex-shrink-0"><i data-lucide="file-warning" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Protesto / Negativação</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Serasa, SPC ou Cartórios.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-blue-500/10 text-blue-400 border border-blue-500/20 p-3 rounded-full flex-shrink-0"><i data-lucide="gavel" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Outro Bloqueio Judicial</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Infojud, CNIB, penhora no rosto dos autos.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sheetNovaParte" class="fixed bottom-0 left-0 right-0 bg-[#0f172a] border-t border-white/10 rounded-t-[32px] z-50 transform translate-y-full transition-transform duration-300 shadow-2xl pb-8 max-h-[85vh] overflow-y-auto no-scrollbar">
+        <div class="px-6 pt-4 pb-2">
+            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-[18px] font-bold text-white mb-1">Nova Parte</h3>
+            <p class="text-[13px] text-slate-400 mb-6">Selecione o tipo de participante a adicionar.</p>
+            <div class="space-y-3">
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-blue-500/10 text-blue-400 border border-blue-500/20 p-3 rounded-full flex-shrink-0"><i data-lucide="users" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Testemunha</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Pessoa arrolada para depoimento.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-3 rounded-full flex-shrink-0"><i data-lucide="microscope" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Perito</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Profissional técnico nomeado.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+
+                <button class="w-full glass-button p-4 rounded-[20px] flex items-center gap-4 text-left">
+                    <div class="bg-purple-500/10 text-purple-400 border border-purple-500/20 p-3 rounded-full flex-shrink-0"><i data-lucide="user-plus" class="w-5 h-5"></i></div>
+                    <div class="flex-1">
+                        <h4 class="text-[14px] font-bold text-white">Terceiro Interessado</h4>
+                        <p class="text-[12px] text-slate-400 mt-0.5">Amicus curiae, assistente, etc.</p>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let isMonitoring = false; 
+        function toggleMonitor() {
+            isMonitoring = !isMonitoring;
+            const btn = document.getElementById('btnMonitor');
+            const bg = document.getElementById('switchBg');
+            const dot = document.getElementById('switchDot');
+            const txt = document.getElementById('txtMonitor');
+            
+            if (isMonitoring) {
+                btn.classList.remove('bg-white/5', 'text-slate-300', 'border-white/10');
+                btn.classList.add('bg-gradient-to-r', 'from-emerald-600', 'to-teal-500', 'text-white', 'border-emerald-400/30', 'shadow-[0_0_15px_rgba(16,185,129,0.25)]');
+                bg.classList.remove('bg-white/10');
+                bg.classList.add('bg-white/30');
+                dot.classList.remove('translate-x-0');
+                dot.classList.add('translate-x-4');
+                txt.textContent = 'Monitorando';
+            } else {
+                btn.classList.remove('bg-gradient-to-r', 'from-emerald-600', 'to-teal-500', 'text-white', 'border-emerald-400/30', 'shadow-[0_0_15px_rgba(16,185,129,0.25)]');
+                btn.classList.add('bg-white/5', 'text-slate-300', 'border-white/10');
+                bg.classList.remove('bg-white/30');
+                bg.classList.add('bg-white/10');
+                dot.classList.remove('translate-x-4');
+                dot.classList.add('translate-x-0');
+                txt.textContent = 'Monitorar';
+            }
+        }
+        
+        toggleMonitor();
+
+        function switchTab(tabId, element) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.className = 'tab-btn pb-3 border-b-[2px] border-transparent text-slate-500 hover:text-slate-300 font-bold text-[14px] whitespace-nowrap transition-colors uppercase tracking-wider';
+            });
+            element.className = 'tab-btn pb-3 border-b-[2px] border-cyan-400 text-cyan-400 font-bold text-[14px] whitespace-nowrap transition-colors uppercase tracking-wider';
+        }
+
+        function openSheet(sheetId) {
+            const sheet = document.getElementById(sheetId);
+            const overlay = document.getElementById('overlay');
+            
+            overlay.classList.remove('pointer-events-none');
+            overlay.classList.remove('opacity-0');
+            overlay.classList.add('opacity-100');
+
+            sheet.classList.remove('translate-y-full');
+            sheet.classList.add('translate-y-0');
+        }
+
+        function closeAllSheets() {
+            const overlay = document.getElementById('overlay');
+            const sheets = ['sheetDossie', 'sheetShare', 'sheetCobrar', 'sheetContato', 'sheetProtestos', 'sheetNovaRestricao', 'sheetNovaParte'];
+
+            overlay.classList.add('opacity-0');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => overlay.classList.add('pointer-events-none'), 300);
+
+            sheets.forEach(id => {
+                const sheet = document.getElementById(id);
+                if(sheet) {
+                    sheet.classList.remove('translate-y-0');
+                    sheet.classList.add('translate-y-full');
+                }
+            });
+        }
+
+        function iniciarGeracaoIA(btn) {
+            if (btn.dataset.gerando === "true") return;
+            btn.dataset.gerando = "true";
+
+            btn.classList.remove('hover:bg-cyan-500/20', 'text-cyan-400');
+            btn.classList.add('btn-ai-scan', 'shadow-[0_0_15px_rgba(34,211,238,0.4)]', 'bg-cyan-500/20', 'text-cyan-300');
+            
+            btn.innerHTML = `<i data-lucide="cpu" class="w-3.5 h-3.5 animate-pulse"></i> <span>Analisando...</span>`;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btn.innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5 animate-pulse"></i> <span>Sintetizando...</span>`;
+                btn.classList.remove('border-cyan-500/30', 'shadow-[0_0_15px_rgba(34,211,238,0.4)]', 'text-cyan-300', 'bg-cyan-500/20');
+                btn.classList.add('border-purple-500/50', 'shadow-[0_0_15px_rgba(168,85,247,0.4)]', 'text-purple-300', 'bg-purple-500/20');
+                lucide.createIcons();
+            }, 1800);
+
+            setTimeout(() => {
+                btn.classList.remove('btn-ai-scan', 'bg-purple-500/20', 'shadow-[0_0_15px_rgba(168,85,247,0.4)]', 'border-purple-500/50', 'text-purple-300');
+                btn.classList.add('border-emerald-500/50', 'bg-emerald-500/10', 'text-emerald-400', 'shadow-[0_0_15px_rgba(16,185,129,0.3)]');
+                
+                btn.innerHTML = `<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> <span>Pronto</span>`;
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    btn.dataset.gerando = "false";
+                    btn.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/50', 'shadow-[0_0_15px_rgba(16,185,129,0.3)]');
+                    btn.classList.add('bg-cyan-500/10', 'text-cyan-400', 'border-cyan-500/30', 'hover:bg-cyan-500/20');
+                    btn.innerHTML = `<span>Gerar com IA</span>`;
+                }, 3500);
+            }, 3600);
+        }
+
+        // ==========================================
+        // Lógica Principal da Animação do Diagnóstico
+        // ==========================================
+        function runAISummaryAnimation() {
+            const skeleton = document.getElementById('summary-skeleton');
+            const textElement = document.getElementById('ai-summary-text');
+            const thinkingElement = document.getElementById('ai-thinking');
+            const badgesElement = document.getElementById('ai-badges');
+            const detailsWrapper = document.getElementById('ai-details-wrapper'); 
+            
+            // Elementos de "Próximos Passos"
+            const ppContent = document.getElementById('pp-content');
+            const ppScanner = document.getElementById('pp-scanner');
+            const ppLoadingIcon = document.getElementById('pp-loading-icon');
+            
+            const fullText = "Ação de indemnização por danos materiais oriundos de falha na prestação de serviço. Prescrição trienal e falta de prova documental robusta no anexo 4. No entanto, há forte embasamento para a inversão do ónus da prova via CDC e jurisprudência favorável da 4ª Turma.";
+
+            // Reset Inicial (Esconde tudo menos o esqueleto)
+            skeleton.classList.remove('hidden');
+            textElement.classList.add('hidden');
+            textElement.innerHTML = '';
+            thinkingElement.classList.add('hidden');
+            
+            badgesElement.classList.add('hidden', 'opacity-0', 'translate-y-2');
+            badgesElement.classList.remove('opacity-100', 'translate-y-0');
+            
+            detailsWrapper.classList.add('grid-rows-[0fr]', 'opacity-0');
+            detailsWrapper.classList.remove('grid-rows-[1fr]', 'opacity-100');
+
+            // Reset "Próximos Passos" (Desfocado e com laser)
+            ppContent.classList.add('blur-[6px]', 'opacity-40', 'scale-[0.98]', 'pointer-events-none');
+            ppContent.classList.remove('blur-none', 'opacity-100', 'scale-100');
+            ppScanner.classList.remove('opacity-0');
+            ppLoadingIcon.classList.remove('hidden');
+
+            // Fase 1: Esqueleto com Laser Scanner visível por 1.5s
+            setTimeout(() => {
+                skeleton.classList.add('hidden');
+                textElement.classList.remove('hidden');
+                thinkingElement.classList.remove('hidden');
+
+                // Fase 2: Efeito Máquina de Escrever
+                let i = 0;
+                function typeWriter() {
+                    if (i < fullText.length) {
+                        textElement.innerHTML = fullText.substring(0, i + 1) + '<span class="inline-block w-1.5 h-3.5 bg-cyan-400 ml-0.5 animate-pulse align-middle shadow-[0_0_8px_rgba(34,211,238,0.8)]"></span>';
+                        i++;
+                        setTimeout(typeWriter, Math.random() * 15 + 10);
+                    } else {
+                        textElement.innerHTML = fullText + '<span class="inline-block w-1.5 h-3.5 bg-cyan-400/50 ml-0.5 animate-pulse align-middle"></span>';
+                        
+                        // Fase 3: Cálculo das métricas e expansão
+                        setTimeout(() => {
+                            thinkingElement.classList.add('hidden');
+                            badgesElement.classList.remove('hidden');
+                            
+                            detailsWrapper.classList.remove('grid-rows-[0fr]', 'opacity-0');
+                            detailsWrapper.classList.add('grid-rows-[1fr]', 'opacity-100');
+                            
+                            setTimeout(() => {
+                                badgesElement.classList.remove('opacity-0', 'translate-y-2');
+                                badgesElement.classList.add('opacity-100', 'translate-y-0');
+                            }, 50);
+
+                            // Fase 4: Revelar "Próximos Passos" logo após as métricas estarem visíveis
+                            setTimeout(() => {
+                                // Esconde o Laser Scanner
+                                ppScanner.classList.add('opacity-0');
+                                
+                                // Remove o blur e restaura a opacidade
+                                ppContent.classList.remove('blur-[6px]', 'opacity-40', 'scale-[0.98]', 'pointer-events-none');
+                                ppContent.classList.add('blur-none', 'opacity-100', 'scale-100');
+                                
+                                // Muda o ícone de load para "check" verde
+                                ppLoadingIcon.classList.remove('animate-spin', 'text-cyan-400');
+                                ppLoadingIcon.classList.add('text-emerald-400');
+                                ppLoadingIcon.setAttribute('data-lucide', 'check-circle-2');
+                                lucide.createIcons();
+
+                            }, 800); // Aguarda 800ms após os riscos abrirem para libertar os próximos passos
+
+                        }, 700);
+                    }
+                }
+                typeWriter();
+            }, 1500);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            runAISummaryAnimation();
+        });
+    </script>
+
+    <!-- ============================================================ -->
+    <!-- Integração Roses: popula a tela com o processo real (?cnj=)   -->
+    <!-- ============================================================ -->
+    <script>
+    (function () {
+        const esc = (s) => { const d = document.createElement('div'); d.innerText = s == null ? '' : String(s); return d.innerHTML; };
+        const params = new URLSearchParams(location.search);
+        const cnj = params.get('cnj');
+        if (!cnj) return; // sem CNJ, mantém o mock/design
+
+        function fillHeader(res, proc) {
+            const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+            setTxt('pd-cnj', 'CNJ ' + (proc?.numero || cnj));
+            setTxt('pd-titulo', proc?.classe || 'Processo');
+            setTxt('pd-tribunal', res?.tribunal_name || res?.tribunal || '—');
+        }
+
+        function fillMovimentacoes(proc) {
+            const box = document.getElementById('content-movimentacoes');
+            if (!box) return;
+            const movs = (proc?.movimentacoes) || [];
+            if (!movs.length) { box.innerHTML = '<p class="text-[13px] text-slate-500 px-1">Sem movimentações disponíveis.</p>'; return; }
+            box.innerHTML = movs.map((m) => `
+                <div class="glass-panel rounded-2xl p-4">
+                    <div class="flex justify-between gap-3 items-start">
+                        <p class="text-[14px] text-slate-200 font-medium">${esc(m.descricao)}</p>
+                        <span class="text-[12px] text-slate-500 whitespace-nowrap">${esc(m.data)}</span>
+                    </div>
+                    ${m.orgao ? `<p class="text-[12px] text-slate-500 mt-1">${esc(m.orgao)}</p>` : ''}
+                </div>`).join('');
+        }
+
+        function fillPartes(proc) {
+            const box = document.getElementById('content-partes');
+            if (!box) return;
+            const partes = (proc?.partes) || [];
+            if (!partes.length) { box.innerHTML = '<p class="text-[13px] text-slate-500 px-1">Partes não disponíveis nesta fonte (DataJud não expõe nomes; use o portal).</p>'; return; }
+            box.innerHTML = partes.map((p) => `
+                <div class="glass-panel rounded-2xl p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 text-sm font-bold">${esc((p.nome || '?').trim().charAt(0).toUpperCase())}</div>
+                    <div>
+                        <p class="text-[14px] text-white font-semibold">${esc(p.nome)}</p>
+                        <p class="text-[12px] text-slate-500">${esc(p.tipo)}</p>
+                    </div>
+                </div>`).join('');
+        }
+
+        async function aiSummary(proc, tribunal) {
+            const skeleton = document.getElementById('summary-skeleton');
+            const textEl = document.getElementById('ai-summary-text');
+            if (!textEl) return;
+            const movs = (proc?.movimentacoes || []).slice(0, 6).map((m) => `${m.data} ${m.descricao}`).join('; ');
+            const prompt = `Resuma em 2 a 3 frases, para um advogado, este processo. Não invente dados.\n` +
+                `Número: ${proc?.numero}\nTribunal: ${tribunal}\nClasse: ${proc?.classe}\nAssunto: ${proc?.assunto}\n` +
+                `Últimas movimentações: ${movs || 'n/d'}`;
+            try {
+                const r = await fetch('/api/chat', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] }),
+                });
+                const d = await r.json();
+                if (skeleton) skeleton.style.display = 'none';
+                textEl.textContent = d.reply || 'Resumo indisponível.';
+                textEl.classList.remove('hidden');
+            } catch (e) {
+                if (skeleton) skeleton.style.display = 'none';
+                textEl.textContent = 'Não foi possível gerar o resumo agora.';
+                textEl.classList.remove('hidden');
+            }
+        }
+
+        async function load() {
+            try {
+                const r = await fetch('/api/consulta', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tipo: 'cnj', valor: cnj, uf: '' }),
+                });
+                const res = await r.json();
+                const proc = (res.processos && res.processos[0]) || null;
+                fillHeader(res, proc);
+                fillMovimentacoes(proc);
+                fillPartes(proc);
+                if (proc) aiSummary(proc, res.tribunal_name || res.tribunal);
+            } catch (e) {
+                const el = document.getElementById('pd-titulo');
+                if (el) el.textContent = 'Erro ao carregar';
+            }
+        }
+
+        // roda depois da animação mock do design assumir o controle
+        if (document.readyState === 'complete') load();
+        else window.addEventListener('load', () => setTimeout(load, 50));
+    })();
+    </script>
+</body>
+</html>

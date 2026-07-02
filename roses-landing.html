@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roses — Assistente Jurídico</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:  #000;
+  --s1:     #1C1C1E;
+  --s2:     #2C2C2E;
+  --s3:     #3A3A3C;
+  --accent: #0A84FF;
+  --green:  #30D158;
+  --t2:     rgba(255,255,255,0.55);
+  --t3:     rgba(255,255,255,0.28);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--black);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PROGRESS BAR ── */
+#pb {
+  position: fixed; top: 0; left: 0;
+  height: 2px; background: var(--accent);
+  width: 0%; z-index: 100;
+  transition: width 0.35s cubic-bezier(.22,.8,.36,1);
+}
+
+/* ── STAGE ── */
+#stage { position: fixed; inset: 0; overflow: hidden; }
+
+#track {
+  display: flex;
+  height: 100vh;
+  will-change: transform;
+  transition: transform 0.72s cubic-bezier(.77,0,.18,1);
+}
+
+/* ── SLIDE ── */
+.slide {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── SLIDE INNER: two-column on desktop, single on mobile ── */
+.slide-inner {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s .05s cubic-bezier(.22,.8,.36,1),
+              transform 0.5s .05s cubic-bezier(.22,.8,.36,1);
+}
+.slide-inner.visible { opacity: 1; transform: translateY(0); }
+
+/* Hero slide: single centered column */
+.slide-inner.hero {
+  grid-template-columns: 1fr;
+  max-width: 600px;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+}
+
+/* Text side */
+.slide-text { display: flex; flex-direction: column; gap: 0; }
+
+/* Visual side */
+.slide-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── TYPOGRAPHY ── */
+.label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--t3); margin-bottom: 18px;
+}
+.display {
+  font-size: clamp(36px, 4.5vw, 58px);
+  font-weight: 700; letter-spacing: -0.6px; line-height: 1.06;
+}
+.body-text {
+  font-size: clamp(15px, 1.4vw, 18px);
+  color: var(--t2); line-height: 1.65;
+  margin-top: 18px; max-width: 400px;
+}
+.hero .body-text { text-align: center; margin: 16px auto 0; }
+
+.cta-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 56px; padding: 0 36px;
+  background: var(--accent); border-radius: 9999px;
+  color: #fff; font-size: 17px; font-weight: 600; letter-spacing: -0.1px;
+  border: none; cursor: pointer; margin-top: 36px;
+  transition: transform 0.15s, opacity 0.15s, background 0.15s;
+  text-decoration: none;
+}
+.cta-btn:hover  { background: #2998FF; }
+.cta-btn:active { transform: scale(0.96); opacity: 0.9; }
+
+/* ── DOTS ── */
+#dots {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 8px; align-items: center; z-index: 60;
+}
+.dot {
+  width: 6px; height: 6px; border-radius: 3px;
+  background: rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: width 0.3s cubic-bezier(.22,.8,.36,1), background 0.3s;
+}
+.dot.active { width: 22px; background: var(--accent); }
+
+/* ── SCROLL HINT ── */
+#scroll-hint {
+  position: fixed; bottom: 62px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  z-index: 60; transition: opacity 0.35s;
+}
+#scroll-hint span { font-size: 10px; letter-spacing: 0.1em; color: var(--t3); text-transform: uppercase; }
+.chev {
+  width: 14px; height: 14px;
+  border-right: 1.5px solid rgba(255,255,255,0.2);
+  border-bottom: 1.5px solid rgba(255,255,255,0.2);
+  transform: rotate(45deg);
+  animation: bounce 1.7s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%,100% { transform: rotate(45deg) translateY(0); opacity: 0.3; }
+  50%      { transform: rotate(45deg) translateY(4px); opacity: 0.9; }
+}
+
+/* ── AUTO RING ── */
+#auto-ring {
+  position: fixed; bottom: 68px; left: 50%;
+  transform: translateX(-50%);
+  width: 36px; height: 36px; z-index: 60;
+  opacity: 0; transition: opacity 0.4s;
+}
+#auto-ring svg { transform: rotate(-90deg); }
+#ring-fill {
+  stroke: var(--accent);
+  stroke-dasharray: 94.2;
+  stroke-dashoffset: 94.2;
+}
+
+/* ── OVERLAY ── */
+#overlay {
+  position: fixed; inset: 0; background: var(--black);
+  z-index: 200; opacity: 0; pointer-events: none;
+  transition: opacity 0.5s;
+}
+#overlay.on { opacity: 1; pointer-events: all; }
+
+/* ══════════════════════════════════════════
+   VISUAL COMPONENTS
+══════════════════════════════════════════ */
+
+/* Hero 3D cards */
+.hero-cards {
+  position: relative;
+  width: min(320px, 80vw);
+  height: 200px;
+  perspective: 900px;
+  margin-bottom: 36px;
+}
+.hcard {
+  position: absolute;
+  width: 100%; height: 160px;
+  background: var(--s1); border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+  padding: 18px 20px;
+}
+.hcard-b { top: 40px; left: 0; opacity: 0.25; transform: rotateX(4deg) rotateY(-4deg) translateZ(-52px); }
+.hcard-m { top: 20px; left: 0; opacity: 0.55; transform: rotateX(4deg) rotateY(-4deg) translateZ(-26px); }
+.hcard-f { top: 0; left: 0; border-color: rgba(255,255,255,0.14); animation: hfloat 6s ease-in-out infinite; transform-origin: center; }
+@keyframes hfloat {
+  0%,100% { transform: rotateX(4deg) rotateY(-4deg) translateZ(0); }
+  50%      { transform: rotateX(4deg) rotateY(-4deg) translateZ(8px); }
+}
+
+/* Pills */
+.pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+.pill-g { background: rgba(48,209,88,0.15); color: var(--green); }
+.pill-b { background: rgba(10,132,255,0.15); color: var(--accent); }
+.mono { font-family: 'SF Mono','Fira Code','Menlo',monospace; }
+
+/* Slide 1: Search demo */
+.search-box {
+  width: 100%; max-width: 420px;
+  background: var(--s1); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+}
+.search-field {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--s2); border-radius: 10px; padding: 11px 14px;
+  font-size: 14px; color: #fff; border: 1px solid rgba(255,255,255,0.07);
+}
+.s-icon { font-size: 13px; opacity: 0.4; }
+.result-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--s2); border-radius: 10px; padding: 11px 14px;
+  animation: rIn 0.35s cubic-bezier(.22,.8,.36,1) both;
+}
+@keyframes rIn { from { opacity:0; transform:translateY(6px);} to {opacity:1;transform:none;} }
+.r-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(10,132,255,0.15); display: flex; align-items: center;
+  justify-content: center; font-size: 14px; flex-shrink: 0;
+}
+
+/* Slide 2: Tribunal grid */
+.tgrid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+  width: 100%; max-width: 400px;
+}
+.tbadge {
+  background: var(--s1); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; padding: 14px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+}
+.ticon {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--s2); display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.tname { font-size: 11px; color: var(--t2); text-align: center; font-weight: 500; }
+.stats-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--s1); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; padding: 16px 20px; width: 100%; max-width: 400px; margin-top: 12px;
+}
+.stat-val { font-size: 32px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
+.stat-lbl { font-size: 12px; color: var(--t3); margin-top: 3px; }
+.div-v { width: 1px; height: 40px; background: rgba(255,255,255,0.07); }
+
+/* Slide 3: Alert feed */
+.feed { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 400px; }
+.alert-card {
+  background: var(--s1); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.alert-card.nr { border-left: 3px solid var(--accent); }
+.aico {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 1px;
+}
+.unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 4px; }
+
+/* Slide 4: Chat */
+.chat-wrap {
+  width: 100%; max-width: 400px;
+  background: var(--s1); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px; overflow: hidden;
+}
+.chat-hdr {
+  padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; gap: 10px;
+}
+.chat-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg,#0A84FF 0%,#5E5CE6 100%); flex-shrink: 0;
+}
+.chat-body { padding: 14px; display: flex; flex-direction: column; gap: 9px; }
+.bub { padding: 10px 14px; font-size: 14px; line-height: 1.5; max-width: 86%; }
+.bub-ai   { background: var(--s2); border-radius: 18px 18px 18px 4px; align-self: flex-start; }
+.bub-user { background: var(--accent); border-radius: 18px 18px 4px 18px; align-self: flex-end; }
+.chat-inp {
+  padding: 10px 14px 14px; display: flex; align-items: center; gap: 8px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.inp-f {
+  flex: 1; background: var(--s2); border-radius: 22px;
+  padding: 9px 14px; font-size: 13px; color: var(--t2);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.send-c {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--accent);
+  display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; flex-shrink: 0;
+}
+
+/* Slide 5: CTA */
+.checks { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+.chk { display: flex; align-items: center; gap: 12px; font-size: 16px; color: var(--t2); }
+.chk-c {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(48,209,88,0.15); color: var(--green);
+  display: flex; align-items: center; justify-content: center; font-size: 11px;
+}
+
+/* ── UTILITY ── */
+.row { display: flex; align-items: center; gap: 8px; }
+.col { display: flex; flex-direction: column; }
+.f1  { flex: 1; min-width: 0; }
+.jb  { justify-content: space-between; }
+.mn  { font-family: 'SF Mono','Fira Code','Menlo',monospace; }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .slide { padding: 60px 24px 80px; }
+  .slide-inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    text-align: center;
+  }
+  .slide-inner:not(.hero) .slide-text { align-items: center; }
+  .slide-inner:not(.hero) .body-text  { margin: 16px auto 0; text-align: center; }
+  .slide-visual { justify-content: center; }
+  .display { font-size: 32px; }
+  .hero-cards { width: min(280px, 85vw); }
+  .tgrid { max-width: 320px; }
+  .stats-row { max-width: 320px; }
+  .feed { max-width: 320px; }
+  .chat-wrap { max-width: 320px; }
+  .search-box { max-width: 320px; }
+  .cta-btn { width: 100%; max-width: 320px; }
+}
+</style>
+</head>
+<body>
+
+<div id="pb"></div>
+
+<div id="stage">
+  <div id="track">
+
+    <!-- ══ SLIDE 0: HERO ══ -->
+    <div class="slide">
+      <div class="slide-inner hero" id="s0">
+        <div class="hero-cards" style="transform-style:preserve-3d;">
+          <div class="hcard hcard-b"></div>
+          <div class="hcard hcard-m"></div>
+          <div class="hcard hcard-f">
+            <div class="row jb" style="margin-bottom:12px;">
+              <span style="font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;">Processo</span>
+              <span class="pill pill-g">Ativo</span>
+            </div>
+            <div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:8px;">0000166-95.1997.8.15.0211</div>
+            <div style="font-size:14px;font-weight:600;margin-bottom:3px;">Procedimento Comum Cível</div>
+            <div style="font-size:12px;color:var(--t3);margin-bottom:14px;">Dano Moral · TJPB</div>
+            <div class="row jb">
+              <div class="row" style="gap:5px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>
+                <span style="font-size:10px;color:var(--t3);">Mov. 28/06/2025</span>
+              </div>
+              <span style="font-size:11px;color:var(--accent);">Ver ›</span>
+            </div>
+          </div>
+        </div>
+        <div class="label">Roses AI</div>
+        <div class="display">Cada processo,<br>ao alcance<br>da sua voz.</div>
+        <p class="body-text">Consulte qualquer tribunal do Brasil por número CNJ, OAB ou nome da parte.</p>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 1: BUSCA ══ -->
+    <div class="slide">
+      <div class="slide-inner" id="s1">
+        <div class="slide-text">
+          <div class="label">Busca instantânea</div>
+          <div class="display">Número, OAB<br>ou nome.</div>
+          <p class="body-text">Qualquer formato. O motor identifica e roteia para o tribunal certo automaticamente.</p>
+        </div>
+        <div class="slide-visual">
+          <div class="search-box">
+            <div class="search-field">
+              <span class="s-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+              <span style="flex:1;font-size:14px;color:var(--t2);">OAB 14233 PB</span>
+              <span class="pill pill-b" style="font-size:10px;">OAB</span>
+            </div>
+            <div class="result-row">
+              <div class="r-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"></path><path d="M3 10a4 4 0 0 0 8 0V7H3v3z"></path><path d="M13 10a4 4 0 0 0 8 0V7h-8v3z"></path><path d="M2 7h20"></path><path d="M9 22h6"></path></svg></div>
+              <div class="col f1">
+                <span class="mn" style="font-size:10px;color:var(--accent);">0000166-95.1997.8.15.0211</span>
+                <span style="font-size:13px;font-weight:600;margin-top:2px;">Procedimento Comum Cível</span>
+                <span style="font-size:11px;color:var(--t3);margin-top:2px;">TJPB · DataJud</span>
+              </div>
+              <span class="pill pill-g" style="flex-shrink:0;">Ativo</span>
+            </div>
+            <div class="result-row" style="animation-delay:.08s;">
+              <div class="r-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"></path><path d="M3 10a4 4 0 0 0 8 0V7H3v3z"></path><path d="M13 10a4 4 0 0 0 8 0V7h-8v3z"></path><path d="M2 7h20"></path><path d="M9 22h6"></path></svg></div>
+              <div class="col f1">
+                <span class="mn" style="font-size:10px;color:var(--accent);">0001234-56.2023.8.15.0001</span>
+                <span style="font-size:13px;font-weight:600;margin-top:2px;">Ação de Cobrança</span>
+                <span style="font-size:11px;color:var(--t3);margin-top:2px;">TJPB · PJe</span>
+              </div>
+              <span class="pill pill-g" style="flex-shrink:0;">Ativo</span>
+            </div>
+            <div class="result-row" style="animation-delay:.16s;">
+              <div class="r-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+              <div class="col f1">
+                <span class="mn" style="font-size:10px;color:var(--accent);">Maria Silva dos Santos</span>
+                <span style="font-size:13px;font-weight:600;margin-top:2px;">Busca por nome</span>
+                <span style="font-size:11px;color:var(--t3);margin-top:2px;">TRF1 · STJ · TJPB</span>
+              </div>
+              <span class="pill pill-b" style="flex-shrink:0;">Nome</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 2: TRIBUNAIS ══ -->
+    <div class="slide">
+      <div class="slide-inner" id="s2">
+        <div class="slide-text">
+          <div class="label">Cobertura nacional</div>
+          <div class="display">Todos os<br>tribunais.</div>
+          <p class="body-text">DataJud, PJe, eSAJ, eProc e portais estaduais. Tudo em um único lugar.</p>
+        </div>
+        <div class="slide-visual">
+          <div class="col" style="gap:0;width:100%;max-width:400px;">
+            <div class="tgrid">
+              <div class="tbadge"><div class="ticon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="4" height="10"></rect><rect x="10" y="10" width="4" height="10"></rect><rect x="16" y="10" width="4" height="10"></rect><path d="M2 22h20"></path><path d="M12 2l10 5v2H2V7l10-5z"></path></svg></div><span class="tname">STJ</span></div>
+              <div class="tbadge"><div class="ticon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"></path><path d="M3 10a4 4 0 0 0 8 0V7H3v3z"></path><path d="M13 10a4 4 0 0 0 8 0V7h-8v3z"></path><path d="M2 7h20"></path><path d="M9 22h6"></path></svg></div><span class="tname">STF</span></div>
+              <div class="tbadge"><div class="ticon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div><span class="tname">TST</span></div>
+              <div class="tbadge"><div class="ticon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></div><span class="tname">TRF 1–6</span></div>
+              <div class="tbadge"><div class="ticon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg></div><span class="tname">27 TJs</span></div>
+              <div class="tbadge" style="border-color:rgba(10,132,255,.25);background:rgba(10,132,255,.06);">
+                <div class="ticon" style="background:rgba(10,132,255,.15);color:var(--accent);font-weight:700;font-size:18px;">+</div>
+                <span class="tname" style="color:var(--accent);">Mais</span>
+              </div>
+            </div>
+            <div class="stats-row">
+              <div class="col"><span class="stat-val" style="color:var(--accent);">91</span><span class="stat-lbl">tribunais</span></div>
+              <div class="div-v"></div>
+              <div class="col" style="align-items:flex-end;"><span class="stat-val" style="color:var(--green);">0.9s</span><span class="stat-lbl" style="text-align:right;">tempo médio</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 3: VIGÍLIA ══ -->
+    <div class="slide">
+      <div class="slide-inner" id="s3">
+        <div class="slide-text">
+          <div class="label">Vigília automática</div>
+          <div class="display">Monitoramento<br>em tempo real.</div>
+          <p class="body-text">Cadastre CPF ou CNPJ e receba alertas automáticos de novos processos e movimentações.</p>
+        </div>
+        <div class="slide-visual">
+          <div class="feed">
+            <div class="alert-card nr">
+              <div class="aico" style="background:rgba(48,209,88,.15);color:var(--green);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+              <div class="col f1">
+                <span style="font-size:14px;font-weight:600;margin-bottom:3px;">Novo processo localizado</span>
+                <span class="mn" style="font-size:11px;color:var(--t3);">0002347-12.2025.8.15.0001</span>
+                <span style="font-size:11px;color:var(--t3);margin-top:3px;">Maria Silva · há 2 min</span>
+              </div>
+              <div class="unread-dot"></div>
+            </div>
+            <div class="alert-card">
+              <div class="aico" style="background:rgba(10,132,255,.15);color:var(--accent);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+              <div class="col f1">
+                <span style="font-size:14px;font-weight:600;margin-bottom:3px;">Nova movimentação</span>
+                <span class="mn" style="font-size:11px;color:var(--t3);">0000166-95.1997.8.15.0211</span>
+                <span style="font-size:11px;color:var(--t3);margin-top:3px;">João Santos · ontem</span>
+              </div>
+            </div>
+            <div class="alert-card">
+              <div class="aico" style="background:rgba(10,132,255,.1);color:var(--accent);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+              <div class="col f1">
+                <span style="font-size:14px;font-weight:600;margin-bottom:3px;">Audiência agendada</span>
+                <span class="mn" style="font-size:11px;color:var(--t3);">0001234-56.2023.8.15.0001</span>
+                <span style="font-size:11px;color:var(--t3);margin-top:3px;">Empresa ABC · em 2 dias</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 4: ROSS CHAT ══ -->
+    <div class="slide">
+      <div class="slide-inner" id="s4">
+        <div class="slide-text">
+          <div class="label">Copiloto Jurídico</div>
+          <div class="display">Ross entende<br>o que você<br>precisa.</div>
+          <p class="body-text">Fale em linguagem natural. Ross identifica o tipo de busca e retorna os resultados.</p>
+        </div>
+        <div class="slide-visual">
+          <div class="chat-wrap">
+            <div class="chat-hdr">
+              <div class="chat-av"></div>
+              <div class="col f1">
+                <span style="font-size:15px;font-weight:600;">Ross</span>
+                <div class="row" style="gap:5px;margin-top:1px;">
+                  <div style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>
+                  <span style="font-size:11px;color:var(--t3);">Assistente Jurídico</span>
+                </div>
+              </div>
+            </div>
+            <div class="chat-body">
+              <div class="bub bub-ai">Me envie um número de processo, OAB ou nome da parte.</div>
+              <div class="bub bub-user">OAB 14233 PB</div>
+              <div class="bub bub-ai">Encontrei 2 processos ativos para OAB 14233/PB no TJPB. Deseja ver os detalhes?</div>
+            </div>
+            <div class="chat-inp">
+              <div class="inp-f">Número CNJ, OAB ou nome…</div>
+              <div class="send-c">↑</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 5: CTA FINAL ══ -->
+    <div class="slide">
+      <div class="slide-inner" id="s5">
+        <div class="slide-text">
+          <div class="label">Roses AI</div>
+          <div class="display">Pronto para<br>começar?</div>
+          <ul class="checks">
+            <li class="chk"><div class="chk-c">✓</div><span>91 tribunais conectados</span></li>
+            <li class="chk"><div class="chk-c">✓</div><span>Consulta por CNJ, OAB ou nome</span></li>
+            <li class="chk"><div class="chk-c">✓</div><span>Alertas automáticos de movimentação</span></li>
+            <li class="chk"><div class="chk-c">✓</div><span>Copiloto jurídico com IA</span></li>
+          </ul>
+          <button class="cta-btn" onclick="triggerCTA()">Iniciar agora</button>
+          <div style="margin-top:14px;font-size:12px;color:var(--t3);">Jurídico. Rápido. Confiável.</div>
+        </div>
+        <!-- Visual: big stat card on desktop -->
+        <div class="slide-visual">
+          <div class="col" style="gap:14px;width:100%;max-width:360px;">
+            <div style="background:var(--s1);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:28px 24px;">
+              <div style="font-size:12px;color:var(--t3);margin-bottom:18px;letter-spacing:.04em;text-transform:uppercase;">Consulta em tempo real</div>
+              <div style="font-size:52px;font-weight:700;color:var(--accent);letter-spacing:-1px;line-height:1;">91</div>
+              <div style="font-size:14px;color:var(--t2);margin-top:4px;">tribunais disponíveis</div>
+              <div style="height:1px;background:rgba(255,255,255,.07);margin:20px 0;"></div>
+              <div class="row jb">
+                <div class="col"><span style="font-size:22px;font-weight:700;color:var(--green);">0.9s</span><span style="font-size:11px;color:var(--t3);margin-top:2px;">tempo médio</span></div>
+                <div class="col" style="align-items:flex-end;"><span style="font-size:22px;font-weight:700;">100%</span><span style="font-size:11px;color:var(--t3);margin-top:2px;text-align:right;">uptime</span></div>
+              </div>
+            </div>
+            <div style="background:var(--s1);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:rgba(48,209,88,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🔔</div>
+              <div class="col f1">
+                <span style="font-size:14px;font-weight:600;">Novo processo localizado</span>
+                <span style="font-size:12px;color:var(--t3);margin-top:2px;">há 2 minutos · TJPB</span>
+              </div>
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /track -->
+</div><!-- /stage -->
+
+<!-- Dots -->
+<div id="dots">
+  <div class="dot active" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+  <div class="dot" data-i="3"></div>
+  <div class="dot" data-i="4"></div>
+  <div class="dot" data-i="5"></div>
+</div>
+
+<!-- Scroll hint -->
+<div id="scroll-hint">
+  <div class="chev"></div>
+  <span>Rolar para explorar</span>
+</div>
+
+<!-- Auto ring -->
+<div id="auto-ring">
+  <svg width="36" height="36" viewBox="0 0 36 36">
+    <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="2"/>
+    <circle id="ring-fill" cx="18" cy="18" r="15" fill="none" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- Overlay -->
+<div id="overlay"></div>
+
+<script>
+const TOTAL   = 6;
+const CIRC    = 2 * Math.PI * 15; // 94.2
+const AUTO_MS = 2400;
+
+let cur = 0;
+let lastNav = 0;
+let autoRaf = null;
+let autoStarted = false;
+
+const track    = document.getElementById('track');
+const pb       = document.getElementById('pb');
+const hint     = document.getElementById('scroll-hint');
+const ring     = document.getElementById('auto-ring');
+const ringFill = document.getElementById('ring-fill');
+const overlay  = document.getElementById('overlay');
+const dots     = document.querySelectorAll('.dot');
+
+// ── SNAP NAVIGATION ──────────────────────────────────────
+function goTo(idx, instant) {
+  idx = Math.max(0, Math.min(TOTAL - 1, idx));
+  const prev = cur;
+  cur = idx;
+
+  // slide content
+  for (let i = 0; i < TOTAL; i++) {
+    const el = document.getElementById('s' + i);
+    if (el) el.classList.toggle('visible', i === idx);
+  }
+
+  // track position
+  if (instant) {
+    track.style.transition = 'none';
+    requestAnimationFrame(() => {
+      track.style.transform = `translateX(${-idx * 100}vw)`;
+      requestAnimationFrame(() => { track.style.transition = ''; });
+    });
+  } else {
+    track.style.transform = `translateX(${-idx * 100}vw)`;
+  }
+
+  // progress bar
+  pb.style.width = ((idx / (TOTAL - 1)) * 100) + '%';
+
+  // dots
+  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+
+  // scroll hint
+  hint.style.opacity = idx === 0 ? '1' : '0';
+  hint.style.pointerEvents = idx === 0 ? 'auto' : 'none';
+
+  // auto-advance management
+  if (idx === TOTAL - 1 && !autoStarted) {
+    startAutoRing();
+  } else if (idx !== TOTAL - 1 && autoStarted) {
+    stopAutoRing();
+  }
+}
+
+function canNav() {
+  const now = Date.now();
+  if (now - lastNav < 800) return false;
+  lastNav = now;
+  return true;
+}
+function next() { if (canNav()) goTo(cur + 1); }
+function prev() { if (canNav()) goTo(cur - 1); }
+
+// ── WHEEL: cooldown-based, funciona com mouse e trackpad ──
+document.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  if (Math.abs(e.deltaY) < 8) return;
+  if (!canNav()) return;
+  e.deltaY > 0 ? goTo(cur + 1) : goTo(cur - 1);
+}, { passive: false });
+
+// ── TOUCH ────────────────────────────────────────────────
+let ty0 = 0;
+
+window.addEventListener('touchstart', (e) => { ty0 = e.touches[0].clientY; }, { passive: false });
+window.addEventListener('touchend', (e) => {
+  const dy = ty0 - e.changedTouches[0].clientY;
+  if (Math.abs(dy) > 40) { dy > 0 ? next() : prev(); }
+}, { passive: false });
+window.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+// ── KEYBOARD ─────────────────────────────────────────────
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')                   { e.preventDefault(); prev(); }
+});
+
+// ── DOTS ─────────────────────────────────────────────────
+dots.forEach((d) => {
+  d.style.cursor = 'pointer';
+  d.addEventListener('click', () => { lastNav = 0; goTo(parseInt(d.dataset.i)); });
+});
+
+// ── AUTO RING ────────────────────────────────────────────
+function startAutoRing() {
+  autoStarted = true;
+  ring.style.opacity = '1';
+  const t0 = performance.now();
+
+  function frame(now) {
+    const p = Math.min(1, (now - t0) / AUTO_MS);
+    ringFill.style.strokeDashoffset = CIRC * (1 - p);
+    if (p < 1) { autoRaf = requestAnimationFrame(frame); }
+    else        { triggerCTA(); }
+  }
+  autoRaf = requestAnimationFrame(frame);
+}
+
+function stopAutoRing() {
+  autoStarted = false;
+  if (autoRaf) cancelAnimationFrame(autoRaf);
+  ring.style.opacity = '0';
+  ringFill.style.strokeDashoffset = CIRC;
+}
+
+// ── CTA TRANSITION ───────────────────────────────────────
+function triggerCTA() {
+  overlay.classList.add('on');
+  setTimeout(() => {
+    // → Replace with: window.location.href = '/register'
+    setTimeout(() => {
+      overlay.classList.remove('on');
+      stopAutoRing();
+      lastNav = 0;
+      goTo(0, true);
+    }, 500);
+  }, 500);
+}
+
+// ── INIT ─────────────────────────────────────────────────
+ringFill.style.strokeDasharray = CIRC;
+ringFill.style.strokeDashoffset = CIRC;
+goTo(0, true);
+</script>
+</body>
+</html>

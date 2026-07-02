@@ -1,0 +1,170 @@
+{
+  "mac_models": [
+    {
+      "model_identifier": "MacBookPro18,3",
+      "board_id": "Mac-CFF7D910A743CAAF",
+      "serial_prefix": "C02G",
+      "bios_versions": [
+        "1715.80.3.0.0",
+        "1715.80.4.0.0",
+        "1731.100.427.0.0"
+      ],
+      "cpu_brand": "Apple M1 Pro",
+      "cpu_cores": 10,
+      "ram_options_gb": [16, 32],
+      "gpu_vendor": "Apple",
+      "gpu_renderer": "Apple M1 Pro",
+      "screen_w": 3456,
+      "screen_h": 2234,
+      "pixel_ratio": 2.0,
+      "color_depth": 30,
+      "platform": "MacIntel",
+      "bios_vendor": "Apple Inc.",
+      "apple_oui_prefixes": ["3c:22:fb", "a4:c3:f0", "f0:18:98"]
+    },
+    {
+      "model_identifier": "MacBookAir10,1",
+      "board_id": "Mac-63001698E7A34814",
+      "serial_prefix": "C02H",
+      "bios_versions": [
+        "1554.140.15.0.0",
+        "1554.140.16.0.0"
+      ],
+      "cpu_brand": "Apple M1",
+      "cpu_cores": 8,
+      "ram_options_gb": [8, 16],
+      "gpu_vendor": "Apple",
+      "gpu_renderer": "Apple M1",
+      "screen_w": 2560,
+      "screen_h": 1600,
+      "pixel_ratio": 2.0,
+      "color_depth": 24,
+      "platform": "MacIntel",
+      "bios_vendor": "Apple Inc.",
+      "apple_oui_prefixes": ["8c:85:90", "ac:bc:32", "00:cd:fe"]
+    },
+    {
+      "model_identifier": "MacBookPro16,1",
+      "board_id": "Mac-E1008331FDC96864",
+      "serial_prefix": "C02J",
+      "bios_versions": [
+        "1715.80.3.0.0",
+        "2069.0.0.0.0"
+      ],
+      "cpu_brand": "Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz",
+      "cpu_cores": 8,
+      "ram_options_gb": [16, 32, 64],
+      "gpu_vendor": "Intel Inc.",
+      "gpu_renderer": "Intel(R) UHD Graphics 630",
+      "screen_w": 3072,
+      "screen_h": 1920,
+      "pixel_ratio": 2.0,
+      "color_depth": 30,
+      "platform": "MacIntel",
+      "bios_vendor": "Apple Inc.",
+      "apple_oui_prefixes": ["14:98:77", "b8:f6:b1", "3c:22:fb"]
+    },
+    {
+      "model_identifier": "iMac21,1",
+      "board_id": "Mac-A369DDC4E67F1C45",
+      "serial_prefix": "C02L",
+      "bios_versions": [
+        "1554.140.15.0.0",
+        "1715.80.3.0.0"
+      ],
+      "cpu_brand": "Apple M1",
+      "cpu_cores": 8,
+      "ram_options_gb": [8, 16],
+      "gpu_vendor": "Apple",
+      "gpu_renderer": "Apple M1",
+      "screen_w": 4480,
+      "screen_h": 2520,
+      "pixel_ratio": 2.0,
+      "color_depth": 30,
+      "platform": "MacIntel",
+      "bios_vendor": "Apple Inc.",
+      "apple_oui_prefixes": ["a4:c3:f0", "f0:18:98", "8c:85:90"]
+    },
+    {
+      "model_identifier": "MacMini9,1",
+      "board_id": "Mac-7BA5B2D9E42DDD94",
+      "serial_prefix": "C07M",
+      "bios_versions": [
+        "1554.140.15.0.0",
+        "1715.80.3.0.0"
+      ],
+      "cpu_brand": "Apple M1",
+      "cpu_cores": 8,
+      "ram_options_gb": [8, 16],
+      "gpu_vendor": "Apple",
+      "gpu_renderer": "Apple M1",
+      "screen_w": 1920,
+      "screen_h": 1080,
+      "pixel_ratio": 1.0,
+      "color_depth": 24,
+      "platform": "MacIntel",
+      "bios_vendor": "Apple Inc.",
+      "apple_oui_prefixes": ["00:cd:fe", "ac:bc:32", "14:98:77"]
+    }
+  ],
+  "windows_models": [
+    {
+      "model_identifier": "Dell XPS 15 9520",
+      "cpu_brand": "Intel(R) Core(TM) i7-12700H CPU @ 2.30GHz",
+      "cpu_cores": 14,
+      "ram_options_gb": [16, 32],
+      "gpu_vendor": "Intel Inc.",
+      "gpu_renderer": "Intel(R) Iris(TM) Xe Graphics",
+      "screen_w": 1920,
+      "screen_h": 1080,
+      "pixel_ratio": 1.0,
+      "color_depth": 24,
+      "platform": "Win32",
+      "bios_vendor": "American Megatrends International, LLC.",
+      "generic_oui_prefixes": ["00:1a:2b", "00:50:56", "08:00:27"]
+    },
+    {
+      "model_identifier": "ASUS ROG Zephyrus G14",
+      "cpu_brand": "AMD Ryzen 7 7745HX with Radeon Graphics",
+      "cpu_cores": 8,
+      "ram_options_gb": [16, 32],
+      "gpu_vendor": "NVIDIA Corporation",
+      "gpu_renderer": "NVIDIA GeForce RTX 4060 Laptop GPU/PCIe/SSE2",
+      "screen_w": 2560,
+      "screen_h": 1440,
+      "pixel_ratio": 1.5,
+      "color_depth": 24,
+      "platform": "Win32",
+      "bios_vendor": "AMI",
+      "generic_oui_prefixes": ["00:1a:2b", "d8:bb:c1", "1c:1b:0d"]
+    },
+    {
+      "model_identifier": "Lenovo ThinkPad X1 Carbon Gen 11",
+      "cpu_brand": "Intel(R) Core(TM) i7-1365U CPU @ 1.80GHz",
+      "cpu_cores": 12,
+      "ram_options_gb": [16, 32],
+      "gpu_vendor": "Intel Inc.",
+      "gpu_renderer": "Intel(R) Iris(TM) Xe Graphics",
+      "screen_w": 2880,
+      "screen_h": 1800,
+      "pixel_ratio": 2.0,
+      "color_depth": 24,
+      "platform": "Win32",
+      "bios_vendor": "LENOVO",
+      "generic_oui_prefixes": ["00:1a:2b", "00:24:d7", "ac:ed:5c"]
+    }
+  ],
+  "gecko_user_agents": [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:130.0) Gecko/20100101 Firefox/130.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14.5; rv:129.0) Gecko/20100101 Firefox/129.0",
+    "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5; rv:127.0) Gecko/20100101 Firefox/127.0"
+  ],
+  "chromium_user_agents": [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+  ]
+}

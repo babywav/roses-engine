@@ -1,0 +1,18 @@
+# Roses — dependências do motor
+#
+# IMPORTANTE: a consulta por NÚMERO (CNJ) via DataJud (roses/datajud) usa
+# APENAS a biblioteca padrão do Python — não precisa instalar nada.
+# As dependências abaixo são para o caminho do PORTAL (OAB/nome) e a API HTTP.
+
+# --- Portal (scrapers/) ---
+camoufox            # Firefox anti-detect com patches em C++
+playwright>=1.40    # automação do navegador (dependência do Camoufox)
+
+# --- API HTTP (api/) ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2
+
+# --- Opcional ---
+# requests só é usado pelo sidecar antigo (desativado). Descomente se for usar.
+# requests>=2.31
