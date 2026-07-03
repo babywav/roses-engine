@@ -732,7 +732,10 @@ function startAuto() {
     const p = Math.min(1, (now - t0) / AUTO_MS);
     rfill.style.strokeDashoffset = CIRC * (1 - p);
     if (p < 1) { autoRaf = requestAnimationFrame(frame); }
-    else        { window.location.href = 'app.html'; }
+    else { 
+      const loggedIn = localStorage.getItem('roses_logged_in') === 'true';
+      window.location.href = loggedIn ? 'app.html' : 'app.html?auth=register';
+    }
   }
   autoRaf = requestAnimationFrame(frame);
 }
