@@ -316,9 +316,6 @@ func spaHandler(dir string) http.HandlerFunc {
 func main() {
 	loadDotEnv()
 	initDB()
-	initCognitoJWKS()
-	
-	// Registra métricas de inicialização
 	StartBackgroundSyncWorker()
 	StartAnalysisQueueWorker()
 	StartVigilanciaWorker()
@@ -358,12 +355,6 @@ func main() {
 	mux.HandleFunc("/api/equipe/membros/adicionar", withAuth(handleAdicionarMembro))
 	mux.HandleFunc("/api/equipe/membros/remover", withAuth(handleRemoverMembro))
 	mux.HandleFunc("/api/admin/metricas", withAdminKey(handleMetricas))
-	mux.HandleFunc("/api/config", withCommon(func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, http.StatusOK, map[string]string{
-			"COGNITO_REGION":    os.Getenv("AWS_REGION"),
-			"COGNITO_CLIENT_ID": os.Getenv("COGNITO_CLIENT_ID"),
-		})
-	}))
 
 	// Front-end (build do Vite). Se nao existir, so a API responde.
 	if _, err := os.Stat(webDir); err == nil {
@@ -560,8 +551,8 @@ func handleAnaliseJobStatus(w http.ResponseWriter, r *http.Request) {
 	var errMsg *string
 
 	err = DBPool.QueryRow(ctx, `
-		SELECT status, resultado, error_message 
-		FROM public.jobs_analise 
+		SELECT status, resultado, error_message
+		FROM public.jobs_analise
 		WHERE id = $1 AND user_id = $2
 	`, jobID, userID).Scan(&status, &resultJSON, &errMsg)
 

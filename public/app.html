@@ -1258,7 +1258,7 @@
             // 1) cria a conta no Supabase (se já existir, segue pro login)
             let session = null;
             try {
-                const res = await window.cognitoAuth.signUp(email, senha, { nome, oab, oab_uf: uf });
+                const res = await window.supaAuth.signUp(email, senha, { nome, oab, oab_uf: uf });
                 if (res.session) session = res.session;
             } catch (e) {
                 if (!/registered|already|exists/i.test(e.message || '')) {
@@ -1267,18 +1267,20 @@
             }
             // 2) faz login pra obter o access_token (só se signUp não retornou sessão)
             try {
-                if (!session) session = await window.cognitoAuth.signIn(email, senha);
-                window.cognitoAuth.persist(session, extra);
+                if (!session) session = await window.supaAuth.signIn(email, senha);
+                window.supaAuth.persist(session, extra);
                 // 3) grava o perfil (best-effort, não bloqueia)
                 try {
                     if (session.user && session.access_token) {
-                        fetch('/api/perfil', {
+                        fetch(window.SUPA_URL + '/rest/v1/perfis', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Authorization': 'Bearer ' + session.access_token
+                                'apikey': window.SUPA_ANON,
+                                'Authorization': 'Bearer ' + session.access_token,
+                                'Prefer': 'resolution=merge-duplicates'
                             },
-                            body: JSON.stringify({ nome, oab_numero: oabNum, oab_uf: uf })
+                            body: JSON.stringify({ id: session.user.id, nome, oab_numero: oabNum, oab_uf: uf })
                         }).catch(() => {});
                     }
                 } catch (_) {}
@@ -2322,60 +2324,26 @@
         // ===== Supabase Auth (login/cadastro reais) =====
         window.SUPA_URL = 'https://rmaauxerpkjucyqflovm.supabase.co';
         window.SUPA_ANON = 'sb_publishable_VGqwnoeTO-WErP_mtvuVSw_0xn9gSQU';
-        window.cognitoAuth = {
+        window.supaAuth = {
             async signUp(email, password, meta) {
-                const r = await fetch(`https://cognito-idp.${window.COGNITO_REGION}.amazonaws.com/`, {
+                const r = await fetch(window.SUPA_URL + '/auth/v1/signup', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-amz-json-1.1', 'X-Amz-Target': 'AWSCognitoIdentityProviderService.SignUp' },
-                    body: JSON.stringify({
-                        ClientId: window.COGNITO_CLIENT_ID,
-                        Username: email,
-                        Password: password
-                    })
+                    headers: { 'Content-Type': 'application/json', 'apikey': window.SUPA_ANON },
+                    body: JSON.stringify({ email, password, data: meta || {} })
                 });
                 const d = await r.json().catch(() => ({}));
-                if (!r.ok) throw new Error(d.message || ('Erro ' + r.status));
-                // Cognito returns UserSub (id). We structure it like session for persistence.
-                return { user: { id: d.UserSub, email, user_metadata: meta } };
+                if (!r.ok) throw new Error(d.msg || d.error_description || d.error || ('Erro ' + r.status));
+                return d;
             },
             async signIn(email, password) {
-                const r = await fetch(`https://cognito-idp.${window.COGNITO_REGION}.amazonaws.com/`, {
+                const r = await fetch(window.SUPA_URL + '/auth/v1/token?grant_type=password', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-amz-json-1.1', 'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth' },
-                    body: JSON.stringify({
-                        AuthFlow: 'USER_PASSWORD_AUTH',
-                        ClientId: window.COGNITO_CLIENT_ID,
-                        AuthParameters: { USERNAME: email, PASSWORD: password }
-                    })
+                    headers: { 'Content-Type': 'application/json', 'apikey': window.SUPA_ANON },
+                    body: JSON.stringify({ email, password })
                 });
                 const d = await r.json().catch(() => ({}));
-                if (!r.ok) {
-                    if (d.message === 'Incorrect username or password.') throw new Error('E-mail ou senha incorretos.');
-                    if (d.message === 'User does not exist.') throw new Error('E-mail ou senha incorretos.');
-                    throw new Error(d.message || ('Erro ' + r.status));
-                }
-                const auth = d.AuthenticationResult;
-                if (!auth) throw new Error('Falha na autenticação');
-                
-                // Fetch user attributes to get sub (id) and metadata
-                const uRes = await fetch(`https://cognito-idp.${window.COGNITO_REGION}.amazonaws.com/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-amz-json-1.1', 'X-Amz-Target': 'AWSCognitoIdentityProviderService.GetUser' },
-                    body: JSON.stringify({ AccessToken: auth.AccessToken })
-                });
-                const uData = await uRes.json().catch(() => ({}));
-                const userObj = { email };
-                if (uData.UserAttributes) {
-                    uData.UserAttributes.forEach(attr => {
-                        if (attr.Name === 'sub') userObj.id = attr.Value;
-                    });
-                }
-                
-                return {
-                    access_token: auth.AccessToken,
-                    refresh_token: auth.RefreshToken,
-                    user: userObj
-                };
+                if (!r.ok) throw new Error(d.msg || d.error_description || d.error || ('Erro ' + r.status));
+                return d;
             },
             persist(session, extra) {
                 if (session && session.access_token) {
@@ -2384,7 +2352,7 @@
                 }
                 const u = session && session.user;
                 if (u) {
-                    if (u.id) localStorage.setItem('roses_user_id', u.id);
+                    localStorage.setItem('roses_user_id', u.id || '');
                     if (u.email) localStorage.setItem('roses_user_email', u.email);
                     const m = u.user_metadata || {};
                     if (m.nome) localStorage.setItem('roses_user_name', m.nome);
@@ -2404,8 +2372,8 @@
             const btn = (event.submitter) || document.querySelector('#loginForm button[type="submit"]');
             try {
                 if (btn) btn.disabled = true;
-                const session = await window.cognitoAuth.signIn(email, password);
-                window.cognitoAuth.persist(session);
+                const session = await window.supaAuth.signIn(email, password);
+                window.supaAuth.persist(session);
                 document.getElementById('loginForm').reset();
                 try { history.replaceState({}, '', location.pathname); } catch (_) {}
                 checkAuthAndInit();
@@ -2432,17 +2400,7 @@
             }
         };
 
-        const checkAuthAndInit = async () => {
-            try {
-                const cfgRes = await fetch('/api/config');
-                const cfg = await cfgRes.json();
-                if (cfg && cfg.COGNITO_REGION && cfg.COGNITO_CLIENT_ID) {
-                    window.COGNITO_REGION = cfg.COGNITO_REGION;
-                    window.COGNITO_CLIENT_ID = cfg.COGNITO_CLIENT_ID;
-                }
-            } catch (e) {
-                console.warn('API config error:', e);
-            }
+        const checkAuthAndInit = () => {
             const loggedIn = localStorage.getItem('roses_logged_in') === 'true';
             const bottomNav = document.getElementById('bottomNav');
 
@@ -4159,7 +4117,6 @@
                 }, 150);
             }
         };
-
 
         window.closeTeamModal = () => {
             const modal = document.getElementById('teamModal');
