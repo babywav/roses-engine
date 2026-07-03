@@ -39,6 +39,26 @@ func handleGetPerfil(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Method == http.MethodPost {
+		var req struct {
+			Nome      string `json:"nome"`
+			OabNumero string `json:"oab_numero"`
+			OabUF     string `json:"oab_uf"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err == nil {
+			_, _ = DBPool.Exec(context.Background(), `
+				INSERT INTO public.perfis (id, nome, oab_numero, oab_uf)
+				VALUES ($1, $2, $3, $4)
+				ON CONFLICT (id) DO UPDATE SET
+					nome = EXCLUDED.nome,
+					oab_numero = EXCLUDED.oab_numero,
+					oab_uf = EXCLUDED.oab_uf
+			`, userID, req.Nome, req.OabNumero, req.OabUF)
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 

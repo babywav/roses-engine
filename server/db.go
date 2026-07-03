@@ -5,7 +5,11 @@ import (
 	"log"
 	"os"
 	"time"
+	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/rds/auth"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -20,13 +24,38 @@ func initDB() {
 		return
 	}
 
-	config, err := pgxpool.ParseConfig(connStr)
+	configStr, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
 		log.Printf("[Database] Erro ao analisar DATABASE_URL: %v", err)
 		return
 	}
 
-	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+	// Suporte dinâmico para AWS IAM Database Authentication (RDS Relay/Aurora Serverless v2)
+	if strings.Contains(connStr, "rds.amazonaws.com") {
+		awsRegion := os.Getenv("AWS_REGION")
+		if awsRegion == "" {
+			awsRegion = "sa-east-1"
+		}
+		awsCfg, err := config.LoadDefaultConfig(context.Background(), config.WithRegion(awsRegion))
+		if err == nil {
+			configStr.BeforeConnect = func(ctx context.Context, cc *pgx.ConnConfig) error {
+				token, err := auth.BuildAuthToken(
+					ctx,
+					cc.Host+":5432",
+					awsCfg.Region,
+					cc.User,
+					awsCfg.Credentials,
+				)
+				if err != nil {
+					return err
+				}
+				cc.Password = token
+				return nil
+			}
+		}
+	}
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), configStr)
 	if err != nil {
 		log.Printf("[Database] Erro ao criar pool de conexões: %v", err)
 		return
