@@ -1,0 +1,12 @@
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        - echo "Nada para compilar, servindo HTML estático"
+  artifacts:
+    baseDirectory: public
+    files:
+      - '**/*'
+  cache:
+    paths: []
