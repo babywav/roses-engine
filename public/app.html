@@ -1256,16 +1256,18 @@
             };
 
             // 1) cria a conta no Supabase (se já existir, segue pro login)
+            let session = null;
             try {
-                await window.supaAuth.signUp(email, senha, { nome, oab, oab_uf: uf });
+                const res = await window.supaAuth.signUp(email, senha, { nome, oab, oab_uf: uf });
+                if (res.session) session = res.session;
             } catch (e) {
                 if (!/registered|already|exists/i.test(e.message || '')) {
                     console.warn('signUp:', e.message);
                 }
             }
-            // 2) faz login pra obter o access_token
+            // 2) faz login pra obter o access_token (só se signUp não retornou sessão)
             try {
-                const session = await window.supaAuth.signIn(email, senha);
+                if (!session) session = await window.supaAuth.signIn(email, senha);
                 window.supaAuth.persist(session, extra);
                 // 3) grava o perfil (best-effort, não bloqueia)
                 try {
