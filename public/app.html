@@ -2420,7 +2420,10 @@
                     if (m.nome) localStorage.setItem('roses_user_name', m.nome);
                     if (m.oab) localStorage.setItem('roses_user_oab', m.oab);
                 }
-                if (extra) Object.keys(extra).forEach((k) => { if (extra[k] != null) localStorage.setItem(k, extra[k]); });
+                if (extra) {
+                    if (extra.nome) localStorage.setItem('roses_user_name', extra.nome);
+                    if (extra.oab) localStorage.setItem('roses_user_oab', extra.oab);
+                }
                 localStorage.setItem('roses_logged_in', 'true');
             }
         };

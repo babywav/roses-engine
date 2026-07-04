@@ -29,12 +29,9 @@ func handleGetPerfil(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if DBPool == nil {
+		// Mock sem banco: não retorna nome para não sobrescrever o localStorage
 		writeJSON(w, http.StatusOK, map[string]any{
-			"id":            userID,
-			"nome":          "Usuário Legado",
-			"oab_numero":    "SP 312.489",
-			"oab_uf":        "SP",
-			"escritorio_id": "00000000-0000-0000-0000-000000000000",
+			"id": userID,
 		})
 		return
 	}
