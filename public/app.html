@@ -1255,38 +1255,54 @@
                 roses_user_avatar: st.avatar || 'https://i.pravatar.cc/150?img=47'
             };
 
-            // 1) cria a conta no Supabase (se já existir, segue pro login)
+            // 1) cria a conta no Cognito
             let session = null;
             try {
-                const res = await window.cognitoAuth.signUp(email, senha, { nome, oab, oab_uf: uf });
-                if (res.session) session = res.session;
+                await window.cognitoAuth.signUp(email, senha, { nome, oab, oab_uf: uf });
             } catch (e) {
                 if (!/registered|already|exists/i.test(e.message || '')) {
                     console.warn('signUp:', e.message);
                 }
             }
-            // 2) faz login pra obter o access_token (só se signUp não retornou sessão)
+            // 2) faz login pra obter o access_token
             try {
-                if (!session) session = await window.cognitoAuth.signIn(email, senha);
+                session = await window.cognitoAuth.signIn(email, senha);
+            } catch (e) {
+                if (e.message && (e.message.includes('confirmed') || e.message.includes('confirmado') || e.message.includes('UserNotConfirmedException') || e.message.includes('not confirmed'))) {
+                    const code = prompt('Insira o código de confirmação enviado para seu e-mail para ativar a conta:');
+                    if (code) {
+                        try {
+                            await window.cognitoAuth.confirmSignUp(email, code);
+                            session = await window.cognitoAuth.signIn(email, senha);
+                        } catch (err) {
+                            alert('Erro ao confirmar conta: ' + err.message);
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                } else {
+                    alert('Erro ao fazer login: ' + e.message);
+                    return;
+                }
+            }
+
+            try {
                 window.cognitoAuth.persist(session, extra);
                 // 3) grava o perfil (best-effort, não bloqueia)
-                try {
-                    if (session.user && session.access_token) {
-                        fetch('/api/perfil', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'Bearer ' + session.access_token
-                            },
-                            body: JSON.stringify({ nome, oab_numero: oabNum, oab_uf: uf })
-                        }).catch(() => {});
-                    }
-                } catch (_) {}
-                try { history.replaceState({}, '', location.pathname); } catch (_) {}
-                if (typeof checkAuthAndInit === 'function') checkAuthAndInit();
-            } catch (e) {
-                alert('Conta criada, mas não consegui entrar automaticamente:\n' + e.message);
-            }
+                if (session.user && session.access_token) {
+                    fetch('/api/perfil', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + session.access_token
+                        },
+                        body: JSON.stringify({ nome, oab_numero: oabNum, oab_uf: uf })
+                    }).catch(() => {});
+                }
+            } catch (_) {}
+            try { history.replaceState({}, '', location.pathname); } catch (_) {}
+            if (typeof checkAuthAndInit === 'function') checkAuthAndInit();
         };
 
         // Inicializa/zera o cadastro ao abrir a tela.
@@ -2336,6 +2352,20 @@
                 if (!r.ok) throw new Error(d.message || ('Erro ' + r.status));
                 // Cognito returns UserSub (id). We structure it like session for persistence.
                 return { user: { id: d.UserSub, email, user_metadata: meta } };
+            },
+            async confirmSignUp(email, code) {
+                const r = await fetch(`https://cognito-idp.${window.COGNITO_REGION}.amazonaws.com/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-amz-json-1.1', 'X-Amz-Target': 'AWSCognitoIdentityProviderService.ConfirmSignUp' },
+                    body: JSON.stringify({
+                        ClientId: window.COGNITO_CLIENT_ID,
+                        Username: email,
+                        ConfirmationCode: code
+                    })
+                });
+                const d = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(d.message || ('Erro ' + r.status));
+                return d;
             },
             async signIn(email, password) {
                 const r = await fetch(`https://cognito-idp.${window.COGNITO_REGION}.amazonaws.com/`, {
