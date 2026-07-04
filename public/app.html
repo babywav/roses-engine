@@ -2083,7 +2083,8 @@
                 </select>
             </div>
             <div style="background: rgba(30,35,45,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; display: flex; align-items: flex-end; padding: 10px 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.4); transition: border-color 0.25s, background 0.25s;">
-                <button class="btn-attach" style="width: 40px; height: 40px; border-radius: 50%; color: rgba(255,255,255,0.55); margin-bottom: 2px;">
+                <input type="file" id="chatFileInput" accept=".pdf,.doc,.docx,.txt,.csv,.xlsx,image/*" style="display:none;" onchange="handleChatFileUpload(event)" />
+                <button class="btn-attach" onclick="document.getElementById('chatFileInput').click()" style="width: 40px; height: 40px; border-radius: 50%; color: rgba(255,255,255,0.55); margin-bottom: 2px;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-7-7h14"></path></svg>
                 </button>
                 <textarea id="chatInput" placeholder="Peça ao Ross..." rows="1" onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); }" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight, 128)+'px'; const hasText=this.value.trim().length>0; const bs=document.getElementById('btnSend'); const bm=document.getElementById('btnMic'); if(bs&&bm){ bs.style.opacity=hasText?'1':'0'; bs.style.pointerEvents=hasText?'auto':'none'; bm.style.opacity=hasText?'0':'1'; bm.style.pointerEvents=hasText?'none':'auto'; }" style="flex: 1; background: transparent; border: none; color: rgba(255,255,255,0.9); font-size: 15px; padding: 10px 8px; resize: none; max-height: 128px; overflow-y: auto; line-height: 1.5; margin: 0 4px; outline: none; scrollbar-width: none;"></textarea>
@@ -3160,6 +3161,35 @@
         chatBody.appendChild(aiMsg);
         chatBody.scrollTop = chatBody.scrollHeight;
     }
+
+    window.handleChatFileUpload = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        addAiBubble(`<div class="msg-bubble" style="color: rgba(255,255,255,0.6);"><i>Anexando ${escHtml(file.name)}...</i></div>`);
+        
+        const formData = new FormData();
+        formData.append('documento', file);
+        
+        try {
+            const token = localStorage.getItem('roses_user_token') || '';
+            const res = await fetch('/api/chat/upload', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'X-API-Key': token },
+                body: formData
+            });
+            const data = await res.json();
+            
+            if (!res.ok) throw new Error(data.error || 'Erro ao processar arquivo');
+            
+            window.currentDocumentContext = data.text;
+            addAiBubble(`<div class="msg-bubble" style="color: #30D158;">Documento <b>${escHtml(file.name)}</b> anexado! O que deseja saber sobre ele?</div>`);
+        } catch (err) {
+            addAiBubble(`<div class="msg-bubble" style="color: #FF453A;">Erro ao anexar: ${escHtml(err.message)}</div>`);
+        }
+        
+        event.target.value = '';
+    };
 
     window.sendChatMessage = async () => {
         const text = chatInput.value.trim();

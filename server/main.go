@@ -240,6 +240,39 @@ func handleChat(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"reply": reply, "model": model})
 }
 
+func handleChatUpload(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "use POST"})
+		return
+	}
+	err := r.ParseMultipartForm(50 << 20) // limite de 50MB
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "form inválido ou arquivo muito grande"})
+		return
+	}
+
+	file, header, err := r.FormFile("documento")
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "campo 'documento' ausente"})
+		return
+	}
+	defer file.Close()
+
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "falha ao ler arquivo"})
+		return
+	}
+
+	text, err := ExtractText(header.Filename, fileBytes)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "falha ao extrair texto: " + err.Error()})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"text": text})
+}
+
 // handleChatStream responde em SSE — tokens chegam em tempo real.
 func handleChatStream(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -332,6 +365,7 @@ func main() {
 	mux.HandleFunc("/api/health", withCommon(handleHealth))
 	mux.HandleFunc("/api/consulta", withAuth(handleConsulta))
 	mux.HandleFunc("/api/chat", withAuth(handleChat))
+	mux.HandleFunc("/api/chat/upload", withAuth(handleChatUpload))
 	mux.HandleFunc("/api/chat/stream", withAuth(handleChatStream))
 	mux.HandleFunc("/api/oportunidades", withAuth(handleOportunidades))
 	mux.HandleFunc("/api/casos", withAuth(handleCasos))
