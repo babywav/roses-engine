@@ -2434,7 +2434,7 @@
 
         const checkAuthAndInit = async () => {
             try {
-                const cfgRes = await fetch('/api/config');
+                const cfgRes = await fetch('/api/config?_cb=' + Date.now());
                 const cfg = await cfgRes.json();
                 if (cfg && cfg.COGNITO_REGION && cfg.COGNITO_CLIENT_ID) {
                     window.COGNITO_REGION = cfg.COGNITO_REGION;
