@@ -62,6 +62,7 @@ func withCommon(h http.HandlerFunc) http.HandlerFunc {
 	origins := getenv("ROSES_CORS_ORIGINS", "*")
 	apiKey := os.Getenv("ROSES_API_KEY")
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[Request Common] Method: %s, Path: %s, URI: %s", r.Method, r.URL.Path, r.RequestURI)
 		w.Header().Set("Access-Control-Allow-Origin", origins)
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-API-Key")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -303,6 +304,7 @@ func handleChatStream(w http.ResponseWriter, r *http.Request) {
 func spaHandler(dir string) http.HandlerFunc {
 	fs := http.FileServer(http.Dir(dir))
 	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[Request SPA] Method: %s, Path: %s, URI: %s", r.Method, r.URL.Path, r.RequestURI)
 		path := filepath.Join(dir, filepath.Clean(r.URL.Path))
 		if info, err := os.Stat(path); err == nil && !info.IsDir() {
 			fs.ServeHTTP(w, r)
