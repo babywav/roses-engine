@@ -1285,8 +1285,7 @@
                 try { history.replaceState({}, '', location.pathname); } catch (_) {}
                 if (typeof checkAuthAndInit === 'function') checkAuthAndInit();
             } catch (e) {
-                alert('Conta criada, mas não consegui entrar automaticamente:\n' + e.message +
-                    '\n\nSe o projeto exige confirmação de e-mail, confirme pelo link enviado — ou desative "Confirm email" no Supabase (Authentication > Providers > Email) para testes.');
+                alert('Conta criada, mas não consegui entrar automaticamente:\n' + e.message);
             }
         };
 
